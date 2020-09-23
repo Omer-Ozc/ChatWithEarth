@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "988818025350-e1l1lffdagbapqilh46v79e00pf3s11r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatwithearth",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "988818025350-2lhmqgtnu61alglpl9t71jm3vs52q89v.apps.googleusercontent.com",
           "client_type": 3
         }
