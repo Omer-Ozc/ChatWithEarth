@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "988818025350",
+    "firebase_url": "https://chatwithearth.firebaseio.com",
+    "project_id": "chatwithearth",
+    "storage_bucket": "chatwithearth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988818025350:android:be86bb056a15a178a8da07",
+        "android_client_info": {
+          "package_name": "com.chatwithearth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "988818025350-2lhmqgtnu61alglpl9t71jm3vs52q89v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOKf0n9pAyybOA7hZlCoRTpB-5yJ0rr5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "988818025350-2lhmqgtnu61alglpl9t71jm3vs52q89v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
