@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import GoogleLog from '../components/LoginButtons/GoogleLog'
-
+import FacebookLog from '../components/LoginButtons/FacebookLog'
 export default class LoginPage extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +18,7 @@ export default class LoginPage extends Component {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <GoogleLog
           onFinish={(data) => this.onFinish(data) } />
+        <FacebookLog />
       </View>
     );
   }
