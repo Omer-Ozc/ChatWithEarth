@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View,Button } from 'react-native';
+import { View,Button,TouchableOpacity } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class Login extends Component {
 
@@ -15,6 +16,9 @@ export default class Login extends Component {
 
         // Once signed in, get the users AccesToken
         const data = await AccessToken.getCurrentAccessToken();
+        if(data != null){
+            this.props.onFinish()
+        }
 
         if (!data) {
             throw 'Something went wrong obtaining access token';
@@ -33,10 +37,11 @@ export default class Login extends Component {
 
         return (
             <View>
-                <Button
-                    title="Facebook Sign-In"
-                    onPress={() => this.onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
-                />
+                <TouchableOpacity
+                onPress={() => this.onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
+                >
+                    <Ionicons name='logo-facebook' size = {30} color ={'blue'} />
+                </TouchableOpacity>
             </View>
         );
     }

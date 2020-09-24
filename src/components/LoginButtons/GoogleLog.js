@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
 import { statusCodes, GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+
 
 export default class GoogleLog extends Component {
     constructor(props) {
@@ -23,6 +27,9 @@ export default class GoogleLog extends Component {
     async onGoogleButtonPress() {
         // Get the users ID token
         const { idToken } = await GoogleSignin.signIn();
+        if(idToken != null){
+            this.props.onFinish()
+        }
       
         // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
@@ -34,11 +41,13 @@ export default class GoogleLog extends Component {
 
     render() {
         return (
-            <View style={{ marginTop: 10 }}>
-                <Button
-                    title="Google Sign-In"
-                    onPress={() => this.onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
-                />
+            <View>
+                <TouchableOpacity
+                 onPress={() => this.onGoogleButtonPress().then(() => console.log('Signed in with Google!'))}
+                >
+                    <MaterialCommunityIcons name='gmail' size = {35} color ={'red'} />
+                </TouchableOpacity>
+
             </View>
         );
     }
