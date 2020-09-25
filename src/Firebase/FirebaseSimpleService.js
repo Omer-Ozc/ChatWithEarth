@@ -22,5 +22,18 @@ export default class FirebaseSimpleSerivce {
         ).then(() => console.log('Data set is success'))
     }
 
-    
+    static setSendMessage(messageFrom, txtMessage) {
+        const userId = auth().currentUser.uid;
+        const reference = database().ref(`/Users/${userId}/messages/${messageFrom}`)
+        const referenceFromTo = database().ref(`/Users/${messageFrom}/messages/${userId}`)
+        reference.update({
+            fromMe_Date: txtMessage
+        })
+        referenceFromTo.update({
+            fromHim_Date: txtMessage
+        })
+
+    }
+
+
 }

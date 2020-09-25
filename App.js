@@ -6,6 +6,8 @@ import LoginPage from './src/containers/LoginPage'
 import MainPage from './src/containers/MainPage'
 import RegisterPage from './src/containers/RegisterPage'
 import RegisterProfilePage from './src/containers/RegisterProfilePage'
+import AddFriend from './src/containers/AddFriend'
+
 
 
 export default class App extends Component {
@@ -30,6 +32,8 @@ export default class App extends Component {
           <Stack.Screen name="MainPage" component={MainPage} />
           <Stack.Screen name="RegisterPage" component={RegisterPage} />
           <Stack.Screen name="RegisterProfilePage" component={RegisterProfilePage} />
+          <Stack.Screen name="AddFriend" component={AddFriend} />
+
         </Stack.Navigator>
       </NavigationContainer>
     );

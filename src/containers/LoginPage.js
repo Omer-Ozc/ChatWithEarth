@@ -87,8 +87,7 @@ export default class LoginPage extends Component {
 
         <View style={styles.inputContainer}>
           <Ionicons name={'ios-lock-closed-outline'} size={28}
-            style={styles.inputIcon}
-          />
+            style={styles.inputIcon} />
 
           <TextInput
             style={styles.input}
@@ -99,11 +98,10 @@ export default class LoginPage extends Component {
           />
 
           <TouchableOpacity style={styles.btnEye}
-            onPress={this.showPass.bind(this)}
-          >
+            onPress={this.showPass.bind(this)}>
             <Ionicons name={this.state.press == false ? 'ios-eye-outline' : 'ios-eye-off-outline'} size={26} color={'black'} />
-
           </TouchableOpacity>
+
         </View>
 
         <TouchableOpacity style={styles.btnLogin}
