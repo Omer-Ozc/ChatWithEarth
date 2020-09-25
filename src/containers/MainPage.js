@@ -15,13 +15,12 @@ export default class MainPage extends Component {
 
   componentDidMount() {
     FirebaseSimpleService.setOnlineMethod()
-    this.fetch()
+    this.serviceFetch()
   }
 
-  fetch = async() => {
-    let userAge = await FirebaseGetService.getIsUserRegistered()
-    console.log("User Aggee", userAge)
-    if(userAge === null){
+  serviceFetch = async() => {
+    let userData = await FirebaseGetService.getIsUserRegistered()
+    if(userData === null){
       this.props.navigation.navigate('RegisterProfilePage')
     }
   }
