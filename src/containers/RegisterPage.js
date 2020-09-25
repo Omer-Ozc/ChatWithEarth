@@ -36,7 +36,7 @@ export default class LoginPage extends Component {
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
           console.log('User account created & signed in!');
-          this.props.navigation.navigate('MainPage')
+          this.props.navigation.navigate('RegisterProfilePage')
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {

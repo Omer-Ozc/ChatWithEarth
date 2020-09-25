@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './src/containers/LoginPage'
 import MainPage from './src/containers/MainPage'
 import RegisterPage from './src/containers/RegisterPage'
+import RegisterProfilePage from './src/containers/RegisterProfilePage'
 
 
 export default class App extends Component {
@@ -28,6 +29,7 @@ export default class App extends Component {
           <Stack.Screen name="LoginPage" component={LoginPage} />
           <Stack.Screen name="MainPage" component={MainPage} />
           <Stack.Screen name="RegisterPage" component={RegisterPage} />
+          <Stack.Screen name="RegisterProfilePage" component={RegisterProfilePage} />
         </Stack.Navigator>
       </NavigationContainer>
     );

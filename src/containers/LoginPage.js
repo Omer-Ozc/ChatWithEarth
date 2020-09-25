@@ -112,7 +112,7 @@ export default class LoginPage extends Component {
         </TouchableOpacity>
 
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 15 }}>If you are not a Member</Text>
+          <Text style={{ fontSize: 15 }}>If you are not a member</Text>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('RegisterPage')}
           >
