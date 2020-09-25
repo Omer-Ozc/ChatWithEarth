@@ -1,24 +1,29 @@
 import React, { Component } from 'react';
-import { View, Text, Button, TextInput} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import { View, Text, Button, TextInput } from 'react-native';
 import database from '@react-native-firebase/database';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
 import CHeader from '../components/views/CHeader'
+import AsyncStorage from '@react-native-community/async-storage';
+import FriendListItem from '../components/ListItem/FriendListItem'
+
+
 
 
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id :'',
-      message :'',
+      id: '',
+      message: '',
+      friendList: '',
     };
   }
 
   componentDidMount() {
     FirebaseSimpleService.setOnlineMethod()
     this.serviceFetch()
+    this.getData()
   }
 
   serviceFetch = async () => {
@@ -32,21 +37,22 @@ export default class MainPage extends Component {
     this.props.navigation.goBack()
   }
 
-  handleId(text){
-    this.setState({id:text})
-  }
-  handleText(text){
-    this.setState({message:text})
-  }
-
-  sendMessage(){
-    FirebaseSimpleService.setSendMessage(this.state.id,this.state.message)
-  }
-
-  navigation(){
+  navigation() {
     console.log("Navigate")
     this.props.navigation.navigate("AddFriend")
   }
+
+  getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@FriendList')
+      if (value !== null) {
+        this.setState({ friendList: value })
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
 
   render() {
     return (
@@ -55,22 +61,11 @@ export default class MainPage extends Component {
         <CHeader
           headerTitle='Main Page'
           backPage={() => this.goToBackPage()}
-          navigatons= {() => this.navigation()} />
+          navigatons={() => this.navigation()} />
 
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View>
 
-        <TextInput
-          placeholder = "Mesaj Kime"
-          onChangeText={(text) => this.handleId(text)}/>
-
-          <TextInput
-          placeholder = "Mesaj Deneme"
-          onChangeText={(text) => this.handleText(text)}/>
-          
-          <Button
-          title = "Mesajı Gönder"
-          onPress = {() => this.sendMessage()} />
-
+          <FriendListItem />
 
         </View>
 
@@ -79,3 +74,29 @@ export default class MainPage extends Component {
     );
   }
 }
+
+
+/*<TextInput
+          placeholder = "Mesaj Kime"
+          onChangeText={(text) => this.handleId(text)}/>
+
+          <TextInput
+          placeholder = "Mesaj Deneme"
+          onChangeText={(text) => this.handleText(text)}/>
+
+          <Button
+          title = "Mesajı Gönder"
+          onPress = {() => this.sendMessage()} />*/
+
+/*
+handleId(text){
+this.setState({id:text})
+}
+handleText(text){
+this.setState({message:text})
+}
+
+sendMessage(){
+FirebaseSimpleService.setSendMessage(this.state.id,this.state.message)
+}
+*/
