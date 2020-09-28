@@ -13,17 +13,38 @@ export default class AddFriend extends Component {
             uid: '',
             name: '',
             lastName: '',
+            friendList :[]
         };
     }
 
-    addFriendToObject() {
+    componentDidMount = async() =>{
+        let friendList = await this.getData()
+        {friendList !=null ? this.setState({friendList:friendList}) : null}
+
+    }
+
+    addFriendToObject (){
         const FriendObject = {
             uid: this.state.uid,
             name: this.state.name,
             lastName: this.state.lastName,
-            messages: [{}]
         }
-        this.storeData(FriendObject)
+        this.state.friendList.push(FriendObject)
+        this.storeData(this.state.friendList)
+        console.log("Friendlist State : ", this.state.friendList)
+    }
+
+    getData = async () => {
+        let friendList = ''
+        try {
+            const userId = auth().currentUser.uid;
+            const jsonValue = await AsyncStorage.getItem(`@${userId}`)
+            friendList = JSON.parse(jsonValue)
+            console.log('Friendlist :', friendList)
+        } catch (e) {
+            console.log(e)
+        }
+        return friendList
     }
 
 
@@ -39,7 +60,17 @@ export default class AddFriend extends Component {
         }
     }
 
-   
+    removeValue = async () => {
+        try {
+            const userId = auth().currentUser.uid;
+            await AsyncStorage.removeItem(`@${userId}`)
+        } catch (e) {
+            console.log(e)
+        }
+        console.log('Done.')
+    }
+
+
 
 
     goToBackPage() {
@@ -77,8 +108,11 @@ export default class AddFriend extends Component {
                         placeholder="Your Friend's Last Name"
                         onChangeText={(text) => this.handleLastName(text)} />
                     <Button
-                        title="Add"
+                        title="Add Friend"
                         onPress={() => this.addFriendToObject()} />
+                    <Button
+                        title="Delete All Friend"
+                        onPress={() => this.removeValue()} />
                 </View>
             </View>
         );

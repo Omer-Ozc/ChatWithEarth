@@ -16,7 +16,7 @@ export default class MainPage extends Component {
     this.state = {
       id: '',
       message: '',
-      friendList: '',
+      profileObject :'',
     };
   }
 
@@ -31,6 +31,7 @@ export default class MainPage extends Component {
     if (userData === null) {
       this.props.navigation.navigate('RegisterProfilePage')
     }
+    this.setState({profileObject : await FirebaseGetService.getIsUserRegistered()})
   }
 
   goToBackPage() {
@@ -65,7 +66,9 @@ export default class MainPage extends Component {
 
         <View>
 
-          <FriendListItem />
+          <FriendListItem
+          name = {this.state.profileObject.name}
+          lastName = {this.state.profileObject.lastName} />
 
         </View>
 

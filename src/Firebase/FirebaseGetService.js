@@ -5,15 +5,15 @@ export default class FirebaseGetSerivce {
 
     static getIsUserRegistered = async () => {
         const userId = auth().currentUser.uid;
-        let s = ""
+        let profileObject = ""
         await database()
             .ref(`/Users/${userId}`)
             .once('value')
             .then(snapshot => {
                 console.log('User data: ', snapshot.val());
-                s = snapshot.val()
+                profileObject = snapshot.val()
             });
-            return s
+            return profileObject
     }
 
 

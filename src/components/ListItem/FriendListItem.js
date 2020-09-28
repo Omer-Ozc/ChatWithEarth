@@ -12,7 +12,7 @@ export default class FriendsView extends Component {
         super(props);
         this.state = {
             uid: '',
-            friendList: ''
+            friendList: []
         };
     }
 
@@ -21,9 +21,8 @@ export default class FriendsView extends Component {
         this.setState({ uid: userId })
         const friendlist = await this.getData()
         this.setState({ friendList: friendlist })
+
     }
-
-
 
     getData = async () => {
         let friendList = ''
@@ -38,6 +37,24 @@ export default class FriendsView extends Component {
         return friendList
     }
 
+    buildFriendList() {
+        return (
+            this.state.friendList.map((data, index) => {
+                console.log("Friendlist Data ", data)
+                return (
+                    <View style={{ marginStart: 4, marginEnd: 4 }}>
+                        <TouchableOpacity>
+                            <View style={styles.box}>
+                                <Ionicons name={'person-circle-outline'} size={40} color={'black'} />
+                                <Text style={styles.username}>{data.name} {data.lastName}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                )
+            })
+        )
+    }
+
 
 
     render() {
@@ -47,20 +64,11 @@ export default class FriendsView extends Component {
                 <View style={styles.header}>
                     <View style={styles.headerContent}>
                         <Ionicons name={'person-circle-outline'} size={80} color={'black'} />
-                        <Text style={{ fontSize: 15, color: "#FFFFFF", }}>Uid: {this.state.uid}</Text>
-                        <Text style={styles.name}>Ömer Özçetin</Text>
+                        <Text style={styles.name}>{this.props.name} {this.props.lastName}</Text>
                     </View>
                 </View>
                 {this.state.friendList != null ?
-                    <View style={styles.body}>
-                        <TouchableOpacity>
-                            <View style={styles.box}>
-                                <Ionicons name={'person-circle-outline'} size={40} color={'black'}
-                                />
-                                <Text style={styles.username}>{this.state.friendList.name} {this.state.friendList.lastName}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+                    this.buildFriendList()
                     : null}
             </View>
         );
@@ -75,6 +83,10 @@ const styles = StyleSheet.create({
         padding: 30,
         alignItems: 'center',
     },
+
+    container: {
+    },
+
     avatar: {
         width: 130,
         height: 130,
@@ -93,6 +105,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     body: {
+        width: 500,
+        height: 300,
+
         padding: 30,
         backgroundColor: "#E6E6FA",
     },
