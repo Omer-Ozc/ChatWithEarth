@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import moment from 'moment';
 
 export default class FirebaseSimpleSerivce {
 
@@ -11,6 +12,9 @@ export default class FirebaseSimpleSerivce {
     }
 
     static setRegisterMethod(userName, userLastName, userAge) {
+       
+       
+
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}`)
         reference.set(
@@ -23,14 +27,23 @@ export default class FirebaseSimpleSerivce {
     }
 
     static setSendMessage(messageFrom, txtMessage) {
+
+        var date = moment()
+        .utcOffset('+03:00')
+        .format('YYYY-MM-DDThh:mm:ss-a');
+
+        console.log(date)
+        let fromMe = 'fromMe_'
+        let fromChat = 'fromChat_'
+
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}/messages/${messageFrom}`)
         const referenceFromTo = database().ref(`/Users/${messageFrom}/messages/${userId}`)
         reference.update({
-            fromMe_Date: txtMessage
+            [`fromMe_${date}`]: txtMessage
         })
         referenceFromTo.update({
-            fromHim_Date: txtMessage
+            [`fromChat_${date}`]: txtMessage
         })
 
     }

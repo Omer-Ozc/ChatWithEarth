@@ -21,12 +21,13 @@ export default class CHeader extends Component {
                     </TouchableOpacity>
 
                     <Text style={styles.textStyle}> {this.props.headerTitle ? this.props.headerTitle : 'CHeader'} </Text>
-
+                    {this.props.showPlus !="off" ? 
                     <TouchableOpacity
                         style={styles.touchableStyle}
                         onPress={() => this.props.navigatons()}>
                         <AntDesign name={'plus'} size={26} color={'white'} />
                     </TouchableOpacity>
+                    : null }
 
                 </View>
             </View>

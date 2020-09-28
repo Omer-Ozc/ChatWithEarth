@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 
 
 
-export default class FriendsView extends Component {
+export default class FriendListItem extends Component {
 
     constructor(props) {
         super(props);
@@ -43,7 +43,8 @@ export default class FriendsView extends Component {
                 console.log("Friendlist Data ", data)
                 return (
                     <View style={{ marginStart: 4, marginEnd: 4 }}>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                        onPress = {() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
                             <View style={styles.box}>
                                 <Ionicons name={'person-circle-outline'} size={40} color={'black'} />
                                 <Text style={styles.username}>{data.name} {data.lastName}</Text>

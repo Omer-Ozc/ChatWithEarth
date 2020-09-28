@@ -13,7 +13,22 @@ export default class FirebaseGetSerivce {
                 console.log('User data: ', snapshot.val());
                 profileObject = snapshot.val()
             });
-            return profileObject
+        return profileObject
+    }
+
+
+
+    static getUserAllChat = async (chatUid) => {
+        const userId = auth().currentUser.uid;
+        let messageObject = []
+        await database()
+            .ref(`/Users/${userId}/messages/${chatUid}`)
+            .once('value')
+            .then(snapshot => {
+                console.log('User Message Data: ', snapshot.val());
+                messageObject = snapshot.val()
+            });
+        return messageObject
     }
 
 

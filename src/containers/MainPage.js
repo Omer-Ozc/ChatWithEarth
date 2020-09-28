@@ -54,6 +54,14 @@ export default class MainPage extends Component {
     }
   }
 
+  NavigateToChat(uid,name,lastName){
+    this.props.navigation.navigate("ChatPage",{
+      uid,
+      name,
+      lastName
+    })
+  }
+
 
   render() {
     return (
@@ -68,7 +76,8 @@ export default class MainPage extends Component {
 
           <FriendListItem
           name = {this.state.profileObject.name}
-          lastName = {this.state.profileObject.lastName} />
+          lastName = {this.state.profileObject.lastName}
+          ChatPage = {(uid,name,lastName) => this.NavigateToChat(uid,name,lastName)} />
 
         </View>
 
