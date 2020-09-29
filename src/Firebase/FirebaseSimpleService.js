@@ -30,7 +30,7 @@ export default class FirebaseSimpleSerivce {
 
         var date = moment()
         .utcOffset('+03:00')
-        .format('YYYY-MM-DDThh:mm:ss-a');
+        .format('YYYY-MM-DDThh:mm:ss');
 
         console.log(date)
         let fromMe = 'fromMe_'
@@ -40,10 +40,10 @@ export default class FirebaseSimpleSerivce {
         const reference = database().ref(`/Users/${userId}/messages/${messageFrom}`)
         const referenceFromTo = database().ref(`/Users/${messageFrom}/messages/${userId}`)
         reference.update({
-            [`fromMe_${date}`]: txtMessage
+            [`${date}_fromMe`]: txtMessage
         })
         referenceFromTo.update({
-            [`fromChat_${date}`]: txtMessage
+            [`${date}_fromChat`]: txtMessage
         })
 
     }

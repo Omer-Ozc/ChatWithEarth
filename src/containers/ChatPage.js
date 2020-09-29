@@ -7,6 +7,7 @@ import MessageListItem from '../components/ListItem/MessageListItem'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import { FlatList } from 'react-native-gesture-handler';
 
 
 export default class ChatPage extends Component {
@@ -16,7 +17,10 @@ export default class ChatPage extends Component {
       chatWith: this.props.route.params,
       Header: '',
       message: '',
-      chat: []
+      chat: [],
+      ChatsLogs: [],
+      ChatFromWho: [],
+      Chats: [],
     };
   }
 
@@ -24,8 +28,28 @@ export default class ChatPage extends Component {
     let Header = this.state.chatWith.name + " " + this.state.chatWith.lastName
     this.setState({ Header: Header })
     let messageObject = await FirebaseGetService.getUserAllChat(this.state.chatWith.uid)
-    this.setState({chat : messageObject})
-    console.log("Mesajlar :" ,this.state.chat)
+    this.setState({ chat: messageObject })
+    const array = Object.keys(this.state.chat);
+    const array2 = Object.values(this.state.chat);
+    this.setState({ ChatFromWho: array })
+    this.setState({ Chats: array2 })
+
+    console.log(this.state.ChatFromWho)
+    console.log(this.state.Chats)
+
+
+
+    for (let i = 0; i < array2.length; i++) {
+      this.state.ChatsLogs.push({
+        [array[i]]: array2[i]
+      })
+    }
+
+    console.log("Chat Logs ", this.state.ChatsLogs)
+    this.state.ChatsLogs.map((data, index) => {
+      console.log(array[index])
+      console.log(array2[index])
+    })
 
   }
 
@@ -33,26 +57,22 @@ export default class ChatPage extends Component {
     this.props.navigation.goBack()
   }
 
-  /*componentDidUpdate(prevProps, prevState) {
-    if(prevState.chat != this.state.chat){
-    const userId = auth().currentUser.uid;
-    let messageObject = ""
-    database()
-      .ref(`/Users/${userId}/messages/${this.state.chatWith.uid}`)
-      .on('value', snapshot => {
-        console.log('User Get Message Chat Page: ', snapshot.val());
-        messageObject = snapshot.val()
-      });
-    console.log("msaEr", messageObject)
-    this.setState({chat:messageObject})
-    console.log(this.state.chat)
-  }
-  }*/
-
   sendMessage() {
     FirebaseSimpleService.setSendMessage(this.state.chatWith.uid, this.state.message)
     const empty = ""
     this.setState({ message: empty })
+  }
+
+  createMessageContent(item, index) {
+    const searchTerm = 'fromMe';
+    const indexOfFirst = this.state.ChatFromWho[index].indexOf(searchTerm);
+    console.log("İNDEX OF ", indexOfFirst)
+
+    return (
+        <MessageListItem
+          checkChatSide={indexOfFirst != -1 ? "fromMe" : null}
+          message={item} />
+    )
   }
 
   render() {
@@ -67,7 +87,11 @@ export default class ChatPage extends Component {
 
         <View style={styles.ChatContainer}>
           <ScrollView>
-            <MessageListItem />
+            <FlatList
+              inverted
+              data={this.state.Chats}
+              renderItem={({ item, index }) => this.createMessageContent(item, index)}
+            />
           </ScrollView>
         </View>
 

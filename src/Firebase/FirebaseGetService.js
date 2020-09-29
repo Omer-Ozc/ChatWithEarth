@@ -5,6 +5,7 @@ export default class FirebaseGetSerivce {
 
     static getIsUserRegistered = async () => {
         const userId = auth().currentUser.uid;
+        console.log("getIsUserRegistered : ", userId)
         let profileObject = ""
         await database()
             .ref(`/Users/${userId}`)

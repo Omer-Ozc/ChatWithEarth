@@ -26,7 +26,7 @@ export default class MessageListItem extends Component {
 const styles = StyleSheet.create({
 
   ContainerLeft: {
-    backgroundColor: '#432577',
+    backgroundColor: 'gray',
     alignSelf: 'flex-start',
     marginBottom: 10,
     borderBottomEndRadius: 15,
