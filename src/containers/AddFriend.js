@@ -20,7 +20,6 @@ export default class AddFriend extends Component {
     componentDidMount = async() =>{
         let friendList = await this.getData()
         {friendList !=null ? this.setState({friendList:friendList}) : null}
-
     }
 
     addFriendToObject (){
@@ -107,12 +106,14 @@ export default class AddFriend extends Component {
                         style={styles.input}
                         placeholder="Your Friend's Last Name"
                         onChangeText={(text) => this.handleLastName(text)} />
-                    <Button
+                   <View style = {{flexDirection:'row'}}>
+                   <Button
                         title="Add Friend"
                         onPress={() => this.addFriendToObject()} />
                     <Button
                         title="Delete All Friend"
                         onPress={() => this.removeValue()} />
+                   </View>
                 </View>
             </View>
         );

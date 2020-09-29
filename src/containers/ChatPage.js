@@ -5,9 +5,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import MessageListItem from '../components/ListItem/MessageListItem'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
-import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
 import { FlatList } from 'react-native-gesture-handler';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+
 
 
 export default class ChatPage extends Component {
@@ -18,7 +19,6 @@ export default class ChatPage extends Component {
       Header: '',
       message: '',
       chat: [],
-      ChatsLogs: [],
       ChatFromWho: [],
       Chats: [],
     };
@@ -27,29 +27,71 @@ export default class ChatPage extends Component {
   componentDidMount = async () => {
     let Header = this.state.chatWith.name + " " + this.state.chatWith.lastName
     this.setState({ Header: Header })
+
     let messageObject = await FirebaseGetService.getUserAllChat(this.state.chatWith.uid)
     this.setState({ chat: messageObject })
+
+    this.sortAlgorithm()
+
+
+  }
+
+  //////////// BURADAN TAŞINICAK//////////////
+  shouldComponentUpdate(nextProps, nextState) {
+
+     if (nextState.chat !== this.state.chat) {
+      const userId = auth().currentUser.uid;
+      let message = []
+      const onValueChange = database()
+        .ref(`/Users/${userId}/messages/${this.state.chatWith.uid}`)
+        .on('value', snapshot => {
+          message = snapshot.val()
+          if (JSON.stringify(message) != JSON.stringify(this.state.chat)) {
+            this.setState({ chat: message })
+            this.sortAlgorithm()
+            //console.log("Set Stadte" , this.state.chat)
+          }
+        });
+      return false
+    }
+    console.log("çıktı")
+    return true
+   
+  }
+
+
+
+  sortAlgorithm() {
+    let swapped;
     const array = Object.keys(this.state.chat);
     const array2 = Object.values(this.state.chat);
+
+
+    do {
+
+      swapped = false
+      for (let k = 0; k < array.length - 1; k++) {
+        let firstDate = array[k]
+        let secondDate = array[k + 1]
+        firstDate = firstDate.substring(0, 25)
+        secondDate = secondDate.substring(0, 25)
+        let firstDateMs = Date.parse(firstDate);
+        let secondDateMs = Date.parse(secondDate);
+        if (firstDateMs < secondDateMs) {
+          let tmp = array[k];
+          array[k] = array[k + 1];
+          array[k + 1] = tmp;
+          swapped = true;
+          let tmp2 = array2[k];
+          array2[k] = array2[k + 1];
+          array2[k + 1] = tmp2;
+        }
+
+      }
+    } while (swapped);
+
     this.setState({ ChatFromWho: array })
     this.setState({ Chats: array2 })
-
-    console.log(this.state.ChatFromWho)
-    console.log(this.state.Chats)
-
-
-
-    for (let i = 0; i < array2.length; i++) {
-      this.state.ChatsLogs.push({
-        [array[i]]: array2[i]
-      })
-    }
-
-    console.log("Chat Logs ", this.state.ChatsLogs)
-    this.state.ChatsLogs.map((data, index) => {
-      console.log(array[index])
-      console.log(array2[index])
-    })
 
   }
 
@@ -64,33 +106,37 @@ export default class ChatPage extends Component {
   }
 
   createMessageContent(item, index) {
+
     const searchTerm = 'fromMe';
     const indexOfFirst = this.state.ChatFromWho[index].indexOf(searchTerm);
-    console.log("İNDEX OF ", indexOfFirst)
-
     return (
-        <MessageListItem
-          checkChatSide={indexOfFirst != -1 ? "fromMe" : null}
-          message={item} />
+      <MessageListItem
+        checkChatSide={indexOfFirst != -1 ? "fromMe" : null}
+        message={item} />
     )
   }
 
   render() {
 
+    console.log("RENDER STAT", this.state.Chats)
     return (
       <View style={{ flex: 1 }}>
 
         <CHeader
           headerTitle={this.state.Header}
           backPage={() => this.goToBackPage()}
-          showPlus="off" />
+          showPlus="off"
+          pageType="ChatPage" />
 
         <View style={styles.ChatContainer}>
-          <ScrollView>
+          <ScrollView
+            ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
             <FlatList
               inverted
               data={this.state.Chats}
+              extraData={this.state.Chats}
               renderItem={({ item, index }) => this.createMessageContent(item, index)}
+              keyExtractor={(item, index) => 'key' + index}
             />
           </ScrollView>
         </View>
@@ -136,3 +182,5 @@ const styles = StyleSheet.create({
   TextInput: {
   }
 });
+
+

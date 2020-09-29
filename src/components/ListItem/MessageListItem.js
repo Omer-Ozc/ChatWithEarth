@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
     left: "1%",
-    top: "2%",
+    top: "10%",
   },
 
   ContainerRight: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     borderTopStartRadius: 15,
     borderBottomLeftRadius: 15,
-    top: "2%",
+    top: "10%",
     right: "1%"
 
   },

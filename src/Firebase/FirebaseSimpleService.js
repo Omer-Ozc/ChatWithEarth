@@ -30,7 +30,7 @@ export default class FirebaseSimpleSerivce {
 
         var date = moment()
         .utcOffset('+03:00')
-        .format('YYYY-MM-DDThh:mm:ss');
+        .format('YYYY-MM-DDTHH:mm:ssZ');
 
         console.log(date)
         let fromMe = 'fromMe_'

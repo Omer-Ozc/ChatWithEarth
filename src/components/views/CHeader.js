@@ -19,6 +19,12 @@ export default class CHeader extends Component {
                         onPress={() => this.props.backPage()} >
                         <Ionicons name={'arrow-back-outline'} size={26} color={'white'} />
                     </TouchableOpacity>
+                    {this.props.pageType === "ChatPage" ?  
+                    <TouchableOpacity style={styles.profileImage}
+                        onPress={() => Alert.alert("Profil Ekranına gidicek.")} >
+                        <Ionicons name={'person-circle-outline'} size={40} color={'white'} />
+                    </TouchableOpacity>
+                    : null }
 
                     <Text style={styles.textStyle}> {this.props.headerTitle ? this.props.headerTitle : 'CHeader'} </Text>
                     {this.props.showPlus !="off" ? 
@@ -51,7 +57,7 @@ const styles = StyleSheet.create({
     textStyle: {
         color: 'white',
         fontSize: 17,
-        left: 30,
+        left: 20,
     },
 
     touchableArrowStyle: {
@@ -62,4 +68,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 380,
     },
+
+    profileImage: {
+        left: 15
+    }
 });
