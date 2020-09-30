@@ -6,8 +6,7 @@ import { get } from 'react-native/Libraries/Utilities/PixelRatio';
 import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import ProfilePopup from '../components/views/ProfilePopup'
 
 
 let initialRegion = {
@@ -23,7 +22,8 @@ export default class MapPage extends Component {
     super(props);
     this.state = {
       count: [],
-      isUserOnlineAndMapCoords: []
+      isUserOnlineAndMapCoords: [],
+      isShow: false
     };
   }
 
@@ -54,7 +54,14 @@ export default class MapPage extends Component {
     FirebaseSimpleService.setOnlineMethod(info.coords.latitude, info.coords.longitude)
   }
 
-  deneme() {
+  showPopup(){
+    this.setState({isShow:true})
+  }
+  closePopup(){
+    this.setState({isShow:false})
+  }
+
+  setMarkers() {
     return this.state.count.map((item, index) => {
 
       if(this.state.isUserOnlineAndMapCoords != ""){
@@ -69,7 +76,7 @@ export default class MapPage extends Component {
         return (<Marker coordinate={Coords}
         image = {require('../res/images/personicon.png')}>
         <Callout
-        onPress={() => console.log("callout hello")}>
+        onPress={() => this.showPopup()}>
           <View style= {{alignItems: 'center',}}>
            <Text>İsim Soyisim</Text>
            <Text style = {{color:"red"}}>Profili Gör</Text>
@@ -84,32 +91,25 @@ export default class MapPage extends Component {
     
   }
 
-  /* setMarker = () => {
-     const coordDolmabahce ={
-       latitude: 0,
-       longitude: 0,
-       latitudeDelta: 0.01,
-       longitudeDelta: 0.01,
-     };
-     return coordDolmabahce
-   }*/
-
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-
+       {this.state.isShow ? <ProfilePopup
+       closePopup = {() => this.closePopup()}/> : null }
+      
         <CHeader
           headerTitle="Chat With Earth"
           showPlus="off"
           backPage={() => this.goToBackPage()}
         />
+
         {this.getMap()}
         <MapView
           provider={PROVIDER_GOOGLE}
           style={{ flex: 1 }}
           initialRegion={initialRegion}>
-          {this.deneme()}
+          {this.setMarkers()}
         </MapView>
 
       </View>

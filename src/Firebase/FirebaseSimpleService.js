@@ -18,6 +18,7 @@ export default class FirebaseSimpleSerivce {
     static setRegisterMethod(userName, userLastName, userAge) {
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}`)
+        const reference2 = database().ref(`/onlineUsers/${userId}`);
         reference.set(
             {
                 name: userName,
@@ -25,6 +26,11 @@ export default class FirebaseSimpleSerivce {
                 age: userAge,
             }
         ).then(() => console.log('Data set is success'))
+        reference2.set({
+            name: userName,
+            lastName: userLastName,
+            age: userAge,
+        }).then(() => console.log('Data onlineUsers Set is success'))
     }
 
     static setSendMessage(messageFrom, txtMessage) {
