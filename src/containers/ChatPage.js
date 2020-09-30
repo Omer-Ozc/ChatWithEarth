@@ -31,7 +31,7 @@ export default class ChatPage extends Component {
     let messageObject = await FirebaseGetService.getUserAllChat(this.state.chatWith.uid)
     this.setState({ chat: messageObject })
 
-    this.sortAlgorithm()
+    {this.state.chat !=null ? this.sortAlgorithm() : null}
 
 
   }
@@ -54,7 +54,6 @@ export default class ChatPage extends Component {
         });
       return false
     }
-    console.log("çıktı")
     return true
    
   }
@@ -118,7 +117,6 @@ export default class ChatPage extends Component {
 
   render() {
 
-    console.log("RENDER STAT", this.state.Chats)
     return (
       <View style={{ flex: 1 }}>
 
@@ -131,13 +129,14 @@ export default class ChatPage extends Component {
         <View style={styles.ChatContainer}>
           <ScrollView
             ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+            {this.state.chat !=null ?
             <FlatList
               inverted
               data={this.state.Chats}
               extraData={this.state.Chats}
               renderItem={({ item, index }) => this.createMessageContent(item, index)}
               keyExtractor={(item, index) => 'key' + index}
-            />
+            /> : null }
           </ScrollView>
         </View>
 

@@ -8,6 +8,8 @@ import RegisterPage from './src/containers/RegisterPage'
 import RegisterProfilePage from './src/containers/RegisterProfilePage'
 import AddFriend from './src/containers/AddFriend'
 import ChatPage from './src/containers/ChatPage'
+import MapPage from './src/containers/MapPage'
+
 
 
 export default class App extends Component {
@@ -34,6 +36,8 @@ export default class App extends Component {
           <Stack.Screen name="RegisterProfilePage" component={RegisterProfilePage} />
           <Stack.Screen name="AddFriend" component={AddFriend} />
           <Stack.Screen name="ChatPage" component={ChatPage} />
+          <Stack.Screen name="MapPage" component={MapPage} />
+
 
 
         </Stack.Navigator>

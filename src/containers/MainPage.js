@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
-import database from '@react-native-firebase/database';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
 import CHeader from '../components/views/CHeader'
 import AsyncStorage from '@react-native-community/async-storage';
 import FriendListItem from '../components/ListItem/FriendListItem'
+import Geolocation from '@react-native-community/geolocation';
 
 
 
@@ -14,16 +14,16 @@ export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: '',
-      message: '',
       profileObject :'',
     };
   }
 
   componentDidMount() {
-    FirebaseSimpleService.setOnlineMethod()
     this.serviceFetch()
     this.getData()
+    this.getMap()
+    FirebaseSimpleService.setOnlineMethod()
+
   }
 
   serviceFetch = async () => {
@@ -39,8 +39,11 @@ export default class MainPage extends Component {
   }
 
   navigation() {
-    console.log("Navigate")
     this.props.navigation.navigate("AddFriend")
+  }
+  navigateToMap(){
+    this.props.navigation.navigate("MapPage")
+
   }
 
   getData = async () => {
@@ -62,6 +65,20 @@ export default class MainPage extends Component {
     })
   }
 
+  setMapCoordsAndIsOnlineMethod(info){
+    FirebaseSimpleService.setOnlineMethod(info.coords.latitude, info.coords.longitude)
+  }
+  
+  getMap = () => {
+    Geolocation.getCurrentPosition(
+      (info) => this.setMapCoordsAndIsOnlineMethod(info),
+      (error) => console.log(error),
+      {
+        enableHighAccuracy: true,
+      },
+    );
+    return <></>;
+  }
 
   render() {
     return (
@@ -70,14 +87,16 @@ export default class MainPage extends Component {
         <CHeader
           headerTitle='Main Page'
           backPage={() => this.goToBackPage()}
-          navigatons={() => this.navigation()} />
+          navigatons={() => this.navigation()}
+          />
 
         <View>
 
           <FriendListItem
-          name = {this.state.profileObject.name}
-          lastName = {this.state.profileObject.lastName}
-          ChatPage = {(uid,name,lastName) => this.NavigateToChat(uid,name,lastName)} />
+          name = {this.state.profileObject.name  != null ? this.state.profileObject.name : "Name"}
+          lastName = {this.state.profileObject.lastName != null ? this.state.profileObject.lastName : "LastName"}
+          ChatPage = {(uid,name,lastName) => this.NavigateToChat(uid,name,lastName)}
+          navigateMap = {() => this.navigateToMap()} />
 
         </View>
 
@@ -86,29 +105,3 @@ export default class MainPage extends Component {
     );
   }
 }
-
-
-/*<TextInput
-          placeholder = "Mesaj Kime"
-          onChangeText={(text) => this.handleId(text)}/>
-
-          <TextInput
-          placeholder = "Mesaj Deneme"
-          onChangeText={(text) => this.handleText(text)}/>
-
-          <Button
-          title = "Mesajı Gönder"
-          onPress = {() => this.sendMessage()} />*/
-
-/*
-handleId(text){
-this.setState({id:text})
-}
-handleText(text){
-this.setState({message:text})
-}
-
-sendMessage(){
-FirebaseSimpleService.setSendMessage(this.state.id,this.state.message)
-}
-*/

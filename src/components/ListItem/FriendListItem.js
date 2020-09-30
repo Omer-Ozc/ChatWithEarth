@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 export default class FriendListItem extends Component {
@@ -30,7 +30,6 @@ export default class FriendListItem extends Component {
             const userId = auth().currentUser.uid;
             const jsonValue = await AsyncStorage.getItem(`@${userId}`)
             friendList = JSON.parse(jsonValue)
-            console.log('Friendlist :', friendList)
         } catch (e) {
             console.log(e)
         }
@@ -40,7 +39,6 @@ export default class FriendListItem extends Component {
     buildFriendList() {
         return (
             this.state.friendList.map((data, index) => {
-                console.log("Friendlist Data ", data)
                 return (
                     <View style={{ marginStart: 4, marginEnd: 4 }}>
                         <TouchableOpacity
@@ -66,6 +64,10 @@ export default class FriendListItem extends Component {
                     <View style={styles.headerContent}>
                         <Ionicons name={'person-circle-outline'} size={80} color={'black'} />
                         <Text style={styles.name}>{this.props.name} {this.props.lastName}</Text>
+                        <TouchableOpacity
+                        onPress = {() => this.props.navigateMap()}>
+                        <MaterialCommunityIcons name={'google-maps'} size={35} color={'black'} />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 {this.state.friendList != null ?

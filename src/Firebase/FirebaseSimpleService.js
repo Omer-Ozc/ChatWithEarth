@@ -4,17 +4,18 @@ import moment from 'moment';
 
 export default class FirebaseSimpleSerivce {
 
-    static setOnlineMethod() {
+    static setOnlineMethod(latitude, longitude) {
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/onlineUsers/${userId}`);
         // Set the /users/:userId value to true
-        reference.set(true).then(() => console.log('Online presence set'));
+        reference.set({
+            isOnline: true,
+            latitude: latitude,
+            longitude: longitude
+        }).then(() => console.log('Online presence set'));
     }
 
     static setRegisterMethod(userName, userLastName, userAge) {
-       
-       
-
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}`)
         reference.set(
@@ -29,10 +30,9 @@ export default class FirebaseSimpleSerivce {
     static setSendMessage(messageFrom, txtMessage) {
 
         var date = moment()
-        .utcOffset('+03:00')
-        .format('YYYY-MM-DDTHH:mm:ssZ');
+            .utcOffset('+03:00')
+            .format('YYYY-MM-DDTHH:mm:ssZ');
 
-        console.log(date)
         let fromMe = 'fromMe_'
         let fromChat = 'fromChat_'
 

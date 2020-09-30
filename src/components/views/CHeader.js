@@ -19,21 +19,21 @@ export default class CHeader extends Component {
                         onPress={() => this.props.backPage()} >
                         <Ionicons name={'arrow-back-outline'} size={26} color={'white'} />
                     </TouchableOpacity>
-                    {this.props.pageType === "ChatPage" ?  
-                    <TouchableOpacity style={styles.profileImage}
-                        onPress={() => Alert.alert("Profil Ekranına gidicek.")} >
-                        <Ionicons name={'person-circle-outline'} size={40} color={'white'} />
-                    </TouchableOpacity>
-                    : null }
+                    {this.props.pageType === "ChatPage" ?
+                        <TouchableOpacity style={styles.profileImage}
+                            onPress={() => Alert.alert("Profil Ekranına gidicek. (Daha oluşturulmadı.)")} >
+                            <Ionicons name={'person-circle-outline'} size={40} color={'white'} />
+                        </TouchableOpacity>
+                        : null}
 
                     <Text style={styles.textStyle}> {this.props.headerTitle ? this.props.headerTitle : 'CHeader'} </Text>
-                    {this.props.showPlus !="off" ? 
-                    <TouchableOpacity
-                        style={styles.touchableStyle}
-                        onPress={() => this.props.navigatons()}>
-                        <AntDesign name={'plus'} size={26} color={'white'} />
-                    </TouchableOpacity>
-                    : null }
+                    {this.props.showPlus != "off" ?
+                        <TouchableOpacity
+                            style={styles.touchableStyle}
+                            onPress={() => this.props.navigatons()}>
+                            <AntDesign name={'plus'} size={26} color={'white'} />
+                        </TouchableOpacity>
+                        : null}
 
                 </View>
             </View>

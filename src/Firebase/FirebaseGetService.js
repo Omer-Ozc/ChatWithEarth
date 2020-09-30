@@ -34,18 +34,32 @@ export default class FirebaseGetSerivce {
 
     static getNewMessage = async (state) => {
 
-            const userId = auth().currentUser.uid;
-            let message = []
-            const onValueChange = await database()
-                .ref(`/Users/${userId}/messages/${this.state.chatWith.uid}`)
-                .on('value', snapshot => {
-                    message = snapshot.val()
-                    if (JSON.stringify(message) != JSON.stringify(state)) {
-                        return message
-                        //console.log("Set Stadte" , this.state.chat)
-                    }
-                });
-        }
+        const userId = auth().currentUser.uid;
+        let message = []
+        const onValueChange = await database()
+            .ref(`/Users/${userId}/messages/${this.state.chatWith.uid}`)
+            .on('value', snapshot => {
+                message = snapshot.val()
+                if (JSON.stringify(message) != JSON.stringify(state)) {
+                    return message
+                    //console.log("Set Stadte" , this.state.chat)
+                }
+            });
+    }
+
+    static getUserAllCoordsAndIsOnline = async () => {
+        const userId = auth().currentUser.uid;
+        let mapObject = []
+        await database()
+            .ref(`/onlineUsers/`)
+            .once('value')
+            .then(snapshot => {
+                console.log("Data Map Fetch Success");
+                mapObject = snapshot.val()
+            });
+        return mapObject
+    }
+
 
 
 }
