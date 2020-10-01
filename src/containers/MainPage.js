@@ -9,12 +9,12 @@ import Geolocation from '@react-native-community/geolocation';
 
 
 
-
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       profileObject :'',
+      counter : 0,
     };
   }
 
@@ -23,8 +23,9 @@ export default class MainPage extends Component {
     this.getData()
     this.getMap()
     FirebaseSimpleService.setOnlineMethod()
-
   }
+
+
 
   serviceFetch = async () => {
     let userData = await FirebaseGetService.getIsUserRegistered()
@@ -37,13 +38,11 @@ export default class MainPage extends Component {
   goToBackPage() {
     this.props.navigation.goBack()
   }
-
   navigation() {
     this.props.navigation.navigate("AddFriend")
   }
   navigateToMap(){
     this.props.navigation.navigate("MapPage")
-
   }
 
   getData = async () => {
@@ -85,7 +84,7 @@ export default class MainPage extends Component {
       <View style={{ flex: 1 }}>
 
         <CHeader
-          headerTitle='Main Page'
+          headerTitle='Chats'
           backPage={() => this.goToBackPage()}
           navigatons={() => this.navigation()}
           />
@@ -93,8 +92,8 @@ export default class MainPage extends Component {
         <View>
 
           <FriendListItem
-          name = {this.state.profileObject.name  != null ? this.state.profileObject.name : "Name"}
-          lastName = {this.state.profileObject.lastName != null ? this.state.profileObject.lastName : "LastName"}
+          name = {this.state.profileObject  != null ? this.state.profileObject.name : "Name"}
+          lastName = {this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
           ChatPage = {(uid,name,lastName) => this.NavigateToChat(uid,name,lastName)}
           navigateMap = {() => this.navigateToMap()} />
 

@@ -11,7 +11,7 @@ export default class FirebaseGetSerivce {
             .ref(`/Users/${userId}`)
             .once('value')
             .then(snapshot => {
-                console.log('User data: ', snapshot.val());
+                console.log('getIsUserRegistered Fetch Success');
                 profileObject = snapshot.val()
             });
         return profileObject
@@ -26,12 +26,13 @@ export default class FirebaseGetSerivce {
             .ref(`/Users/${userId}/messages/${chatUid}`)
             .once('value')
             .then(snapshot => {
-                console.log("Data Fetch Success");
+                console.log("getUserAllChat Fetch Success");
                 messageObject = snapshot.val()
             });
         return messageObject
     }
 
+    //BURANIN ŞUANDA BİR İŞLEVİ YOK 
     static getNewMessage = async (state) => {
 
         const userId = auth().currentUser.uid;
@@ -54,12 +55,25 @@ export default class FirebaseGetSerivce {
             .ref(`/onlineUsers/`)
             .once('value')
             .then(snapshot => {
-                console.log("Data Map Fetch Success");
+                console.log("getUserAllCoordsAndIsOnline Fetch Success");
                 mapObject = snapshot.val()
             });
         return mapObject
     }
 
+
+    static getUserAllMessageList = async () => {
+        const userId = auth().currentUser.uid;
+        let messageList = []
+        await database()
+            .ref(`/Users/${userId}/messages/`)
+            .once('value')
+            .then(snapshot => {
+                console.log("getUserAllMessageList Fetch Success");
+                messageList = snapshot.val()
+            });
+        return messageList
+    }
 
 
 }

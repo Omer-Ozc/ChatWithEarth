@@ -33,8 +33,9 @@ export default class RegisterProfilePage extends Component {
 
     }
 
-    btnPush = () => {
-        FirebaseSimpleService.setRegisterMethod(this.state.name, this.state.lastName, this.state.age)
+    btnPush = async() => {
+        await FirebaseSimpleService.setRegisterMethod(this.state.name, this.state.lastName, this.state.age)
+        await FirebaseSimpleService.setRegisterMethodForOnlineUsers(this.state.name, this.state.lastName, this.state.age)
         this.props.navigation.navigate("MainPage")
     }
 

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Alert, TouchableOpacity, Button } from 'react-native';
 import CHeader from '../components/views/CHeader'
 import Geolocation from '@react-native-community/geolocation';
-import { get } from 'react-native/Libraries/Utilities/PixelRatio';
-import MapView, { PROVIDER_GOOGLE, Marker,Callout } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import FirebaseGetService from '../Firebase/FirebaseGetService'
 import ProfilePopup from '../components/views/ProfilePopup'
@@ -12,8 +11,8 @@ import ProfilePopup from '../components/views/ProfilePopup'
 let initialRegion = {
   latitude: 35.9025,
   longitude: 25.90902,
-  latitudeDelta:42.02683,
-  longitudeDelta:44.5742,
+  latitudeDelta: 42.02683,
+  longitudeDelta: 44.5742,
 };
 
 
@@ -23,7 +22,8 @@ export default class MapPage extends Component {
     this.state = {
       count: [],
       isUserOnlineAndMapCoords: [],
-      isShow: false
+      isShow: false,
+      profile: ''
     };
   }
 
@@ -54,50 +54,92 @@ export default class MapPage extends Component {
     FirebaseSimpleService.setOnlineMethod(info.coords.latitude, info.coords.longitude)
   }
 
-  showPopup(){
-    this.setState({isShow:true})
+  btnPressed(uid, name, lastName, age) {
+    let profile = {
+      uid: uid,
+      name: name,
+      lastName: lastName,
+      age: age
+    }
+
+    this.setState({ profile: profile })
+    this.setState({ isShow: true })
   }
-  closePopup(){
+
+  showPopup() {
+    if (this.state.isShow) {
+      return (
+        <ProfilePopup
+          uid={this.state.profile.uid}
+          name={this.state.profile.name}
+          lastName={this.state.profile.lastName}
+          age={this.state.profile.age}
+          closePopup={() => this.closePopup()}
+          goToChatPage={(uid, name, lastName) => this.goToChatPage(uid, name, lastName)}
+        />)
+    }
+    else {
+      return null
+    }
+  }
+
+  goToChatPage(uid,name,lastName){
+    this.props.navigation.navigate("ChatPage", {
+      uid,
+      name,
+      lastName
+    })
     this.setState({isShow:false})
+  }
+  closePopup() {
+    this.setState({ isShow: false })
   }
 
   setMarkers() {
     return this.state.count.map((item, index) => {
 
-      if(this.state.isUserOnlineAndMapCoords != ""){
-        if(this.state.isUserOnlineAndMapCoords[item].isOnline){
-      let Coords = {
-        latitude: this.state.isUserOnlineAndMapCoords[item].latitude,
-        longitude: this.state.isUserOnlineAndMapCoords[item].longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
-        
-        return (<Marker coordinate={Coords}
-        image = {require('../res/images/personicon.png')}>
-        <Callout
-        onPress={() => this.showPopup()}>
-          <View style= {{alignItems: 'center',}}>
-           <Text>İsim Soyisim</Text>
-           <Text style = {{color:"red"}}>Profili Gör</Text>
-          </View>
-        </Callout>
-        </Marker>     
-        )}}
+      if (this.state.isUserOnlineAndMapCoords != "") {
+        if (this.state.isUserOnlineAndMapCoords[item].isOnline) {
+          let Coords = {
+            latitude: this.state.isUserOnlineAndMapCoords[item].latitude,
+            longitude: this.state.isUserOnlineAndMapCoords[item].longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          };
+
+
+          let uid = item
+          let name = this.state.isUserOnlineAndMapCoords[item].name
+          let lastName = this.state.isUserOnlineAndMapCoords[item].lastName
+          let age = this.state.isUserOnlineAndMapCoords[item].age
+
+
+          return (<Marker coordinate={Coords}
+            image={require('../res/images/personicon.png')}>
+            <Callout
+              onPress={() => this.btnPressed(uid, name, lastName, age)}>
+              <View style={{ alignItems: 'center', }}>
+                <Text>{name} {lastName} </Text>
+                <Text style={{ color: "red" }}>Profili Gör</Text>
+              </View>
+            </Callout>
+          </Marker>
+          )
+        }
+      }
       return (
         null
       )
     })
-    
+
   }
 
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-       {this.state.isShow ? <ProfilePopup
-       closePopup = {() => this.closePopup()}/> : null }
-      
+
+        {this.showPopup()}
         <CHeader
           headerTitle="Chat With Earth"
           showPlus="off"

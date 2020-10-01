@@ -13,24 +13,16 @@ export default class AddFriend extends Component {
             uid: '',
             name: '',
             lastName: '',
-            friendList :[]
+            friendList: [],
+            
         };
     }
 
-    componentDidMount = async() =>{
+    componentDidMount = async () => {
         let friendList = await this.getData()
-        {friendList !=null ? this.setState({friendList:friendList}) : null}
-    }
-
-    addFriendToObject (){
-        const FriendObject = {
-            uid: this.state.uid,
-            name: this.state.name,
-            lastName: this.state.lastName,
-        }
-        this.state.friendList.push(FriendObject)
-        this.storeData(this.state.friendList)
-        console.log("Friendlist State : ", this.state.friendList)
+        { friendList != null ? this.setState({ friendList: friendList }) : null }
+        let uids = this.props.route.params.uid
+        this.setState({ uid: uids })
     }
 
     getData = async () => {
@@ -39,11 +31,41 @@ export default class AddFriend extends Component {
             const userId = auth().currentUser.uid;
             const jsonValue = await AsyncStorage.getItem(`@${userId}`)
             friendList = JSON.parse(jsonValue)
-            console.log('Friendlist :', friendList)
         } catch (e) {
             console.log(e)
         }
         return friendList
+    }
+
+    addFriendToObject() {
+        let copyList = this.state.friendList
+        console.log(copyList)
+        let control = false
+        let index = 0
+        for (let i = 0; i < this.state.friendList.length; i++) {
+            if (this.state.friendList[i].uid == this.state.uid) {
+                control = true
+                index = i
+            }
+        }
+        if (control) {
+            copyList[index] = {
+                uid: this.state.uid,
+                name: this.state.name,
+                lastName: this.state.lastName
+            }
+            this.setState({ friendList: copyList })
+            this.storeData(this.state.friendList)
+        }
+        else {
+            const FriendObject = {
+                uid: this.state.uid,
+                name: this.state.name,
+                lastName: this.state.lastName,
+            }
+            this.state.friendList.push(FriendObject)
+            this.storeData(this.state.friendList)
+        }
     }
 
 
@@ -97,7 +119,8 @@ export default class AddFriend extends Component {
                     <TextInput
                         style={styles.input}
                         placeholder="User Uid"
-                        onChangeText={(text) => this.handleId(text)} />
+                        onChangeText={(text) => this.handleId(text)}
+                        value={this.state.uid} />
                     <TextInput
                         style={styles.input}
                         placeholder="Your Friend's Name"
@@ -106,14 +129,14 @@ export default class AddFriend extends Component {
                         style={styles.input}
                         placeholder="Your Friend's Last Name"
                         onChangeText={(text) => this.handleLastName(text)} />
-                   <View style = {{flexDirection:'row'}}>
-                   <Button
-                        title="Add Friend"
-                        onPress={() => this.addFriendToObject()} />
-                    <Button
-                        title="Delete All Friend"
-                        onPress={() => this.removeValue()} />
-                   </View>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Button
+                            title="Add Friend"
+                            onPress={() => this.addFriendToObject()} />
+                        <Button
+                            title="Delete All Friend"
+                            onPress={() => this.removeValue()} />
+                    </View>
                 </View>
             </View>
         );

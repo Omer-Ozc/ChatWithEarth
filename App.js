@@ -37,6 +37,7 @@ export default class App extends Component {
           <Stack.Screen name="AddFriend" component={AddFriend} />
           <Stack.Screen name="ChatPage" component={ChatPage} />
           <Stack.Screen name="MapPage" component={MapPage} />
+          
 
 
 

@@ -49,13 +49,11 @@ export default class ChatPage extends Component {
           if (JSON.stringify(message) != JSON.stringify(this.state.chat)) {
             this.setState({ chat: message })
             this.sortAlgorithm()
-            //console.log("Set Stadte" , this.state.chat)
           }
         });
       return false
     }
     return true
-   
   }
 
 
@@ -115,10 +113,25 @@ export default class ChatPage extends Component {
     )
   }
 
+  noNameChat(){
+    return(
+      <View style = {{justifyContent:'center', alignItems:'center'}}>
+      <Text style = {{fontSize:15}}>İf you want to Chat, you have to add your Friendlist</Text>
+      <TouchableOpacity 
+      style = {{backgroundColor:"#432577", width:150, height:50, justifyContent:'center', alignItems:'center', borderRadius:50}}
+      onPress= {() => this.props.navigation.navigate("AddFriend",{
+        uid : this.state.chatWith.uid
+      })}>
+        <Text style = {{color :"white"}}>Add Your Friendlist</Text>
+      </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor:'white'}}>
 
         <CHeader
           headerTitle={this.state.Header}
@@ -127,6 +140,7 @@ export default class ChatPage extends Component {
           pageType="ChatPage" />
 
         <View style={styles.ChatContainer}>
+          {this.state.Header != "Nameless Person " ? 
           <ScrollView
             ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
             {this.state.chat !=null ?
@@ -138,6 +152,7 @@ export default class ChatPage extends Component {
               keyExtractor={(item, index) => 'key' + index}
             /> : null }
           </ScrollView>
+          : this.noNameChat()}
         </View>
 
         <View style={styles.textInputContainer}>

@@ -8,39 +8,44 @@ export default class FirebaseSimpleSerivce {
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/onlineUsers/${userId}`);
         // Set the /users/:userId value to true
-        reference.set({
+        reference.update({
             isOnline: true,
             latitude: latitude,
             longitude: longitude
         }).then(() => console.log('Online presence set'));
     }
 
-    static setRegisterMethod(userName, userLastName, userAge) {
+    static setRegisterMethod = async(userName, userLastName, userAge) => {
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}`)
-        const reference2 = database().ref(`/onlineUsers/${userId}`);
-        reference.set(
+        await reference.set(
             {
                 name: userName,
                 lastName: userLastName,
                 age: userAge,
             }
         ).then(() => console.log('Data set is success'))
-        reference2.set({
-            name: userName,
-            lastName: userLastName,
-            age: userAge,
-        }).then(() => console.log('Data onlineUsers Set is success'))
     }
+
+    static setRegisterMethodForOnlineUsers = async(userName, userLastName, userAge) => {
+        const userId = auth().currentUser.uid;
+        const reference = database().ref(`/onlineUsers/${userId}`)
+        await reference.set(
+            {
+                name: userName,
+                lastName: userLastName,
+                age: userAge,
+            }
+        ).then(() => console.log('Data Online Users is Success'))
+
+
+        }
 
     static setSendMessage(messageFrom, txtMessage) {
 
         var date = moment()
             .utcOffset('+03:00')
             .format('YYYY-MM-DDTHH:mm:ssZ');
-
-        let fromMe = 'fromMe_'
-        let fromChat = 'fromChat_'
 
         const userId = auth().currentUser.uid;
         const reference = database().ref(`/Users/${userId}/messages/${messageFrom}`)
@@ -54,5 +59,5 @@ export default class FirebaseSimpleSerivce {
 
     }
 
-
+    
 }
