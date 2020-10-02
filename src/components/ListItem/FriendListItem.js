@@ -16,7 +16,7 @@ export default class FriendListItem extends Component {
             friendList: [],
             fireBaseFriendLists: [],
             control: true,
-
+            counter: 0
         };
     }
 
@@ -37,29 +37,96 @@ export default class FriendListItem extends Component {
         return true
     }
 
+
     componentDidMount = async () => {
+        console.log("Friendlist Counts", this.props.counter)
         const userId = auth().currentUser.uid;
         this.setState({ uid: userId })
-        const friendList = await this.getData()
-        { friendList != null ? this.setState({ friendList: friendList }) : null }
+        let friendList = await this.getData()
+        { friendList != [] ? this.setState({ friendList: friendList }) : this.setState({friendList : []}) }
         let messageList = await FirebaseGetSerivce.getUserAllMessageList()
         this.setState({ fireBaseFriendLists: messageList })
         this.sortList()
     }
 
+    componentDidUpdate = async (prevProps, prevState) => {
+
+        console.log("update")
+        let friendList = await this.getData()
+        let messageList = await FirebaseGetSerivce.getUserAllMessageList()
+        let FirebaseObj =[]
+        if (this.state.fireBaseFriendLists != null) {
+            FirebaseObj = Object.keys(this.state.fireBaseFriendLists)
+        }
+        let friendListObj = []
+        if(this.state.friendList != []){
+        this.state.friendList.map((data, index) => {
+            friendListObj[index] = data.uid
+        })}
+        console.log("FRIENDLIST OBJ : ", friendListObj)
+        console.log("FRLIST OBJ OBJ : ", FirebaseObj)
+        let control = true 
+
+
+
+        if (JSON.stringify(friendList) !== JSON.stringify(this.state.friendList)) {
+            console.log("state friendlist karşılaştırması")
+            { friendList != null ? this.setState({ friendList: friendList }) : this.setState({ friendList: [] }) }
+            console.log(this.state.friendList)
+        }
+
+        if (JSON.stringify(messageList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
+            console.log("firebase friendlist karşılaştırması")
+            this.setState({ fireBaseFriendLists: messageList })
+        }
+
+        if (JSON.stringify(this.state.friendList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
+            console.log("firebase - state friendlist karşılaştırması")
+        }
+
+        for(let i = 0 ; i<friendListObj.length ; i++){
+            for(let k =0 ; k<FirebaseObj.length ; k++){
+                if(friendListObj[i] == FirebaseObj[k]){
+                    control = false
+                    break
+                }
+            }
+        }
+        for(let i = 0 ; i<FirebaseObj.length ; i++){
+            for(let k =0 ; k<friendListObj.length ; k++){
+                if(friendListObj[i] == FirebaseObj[k]){
+                    control = false
+                    break
+                }
+            }
+        }
+        console.log(control)
+        if(control){
+            this.sortList()
+        }
+
+
+    }
+
+
 
     sortList() {
+        let control = true
+        if(this.state.fireBaseFriendLists != null){
         const array = Object.keys(this.state.fireBaseFriendLists)
         return array.map((data, index) => {
-            this.setState({ control: true })
+            if (control != true) {
+                 control= true
+            }
+
             if (this.state.friendList != null) {
                 for (let i = 0; i < this.state.friendList.length; i++) {
                     if (this.state.friendList[i].uid == data) {
-                        this.setState({ control: false })
+                        control = false
                     }
                 }
             }
-            if (this.state.control) {
+            if (control) {
                 const FriendObject = {
                     uid: data,
                     name: "Nameless Person",
@@ -67,8 +134,10 @@ export default class FriendListItem extends Component {
                 }
                 this.state.friendList.push(FriendObject)
             }
+            console.log("this.storeData(this.state.friendList) : ÇALIŞTI")
             this.storeData(this.state.friendList)
-        })
+        })}
+
     }
 
     storeData = async (value) => {
@@ -83,7 +152,7 @@ export default class FriendListItem extends Component {
     }
 
     getData = async () => {
-        let friendList = ''
+        let friendList = []
         try {
             const userId = auth().currentUser.uid;
             const jsonValue = await AsyncStorage.getItem(`@${userId}`)
@@ -91,14 +160,25 @@ export default class FriendListItem extends Component {
         } catch (e) {
             console.log(e)
         }
+        if(friendList == ""){
+        console.log("componentDidMount 1",this.state.friendList)
+
+            return []
+            
+        }
+        
+        else{
+        console.log("componentDidMount 2",this.state.friendList)
+
         return friendList
-    }
+    }}
 
     buildFriendList() {
         return (
             this.state.friendList.map((data, index) => {
+                let key = index
                 return (
-                    <View style={{ backgroundColor: 'white', height: "28%", }}>
+                    <View style={{ backgroundColor: 'white' }}>
                         <TouchableOpacity
                             style={{ borderBottomColor: '#432577', borderBottomWidth: 1 }}
                             onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
@@ -115,23 +195,26 @@ export default class FriendListItem extends Component {
     }
 
     noFriend() {
-        console.log("style")
         return (<View style={{ alignItems: 'center', top: "50%" }}>
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold' }}>You have not any chat</Text>
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold' }}>You can send a message from here!</Text>
+
             <TouchableOpacity
                 onPress={() => this.props.navigateToAddFriend()}>
                 <View>
                     <MaterialCommunityIcons name={'chat-plus'} size={60} color={'#432577'} style={{ top: "20%" }} />
                 </View>
             </TouchableOpacity>
+
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "10%" }}>You can talk with earth!</Text>
+
             <TouchableOpacity
                 onPress={() => this.props.navigateToMap()}>
                 <View>
-                    <Ionicons name={'earth'} size={60} color={'#432577'}  style = {{top:"50%"}} />
+                    <Ionicons name={'earth'} size={60} color={'#432577'} style={{ top: "50%" }} />
                 </View>
             </TouchableOpacity>
+
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "13%" }}>Press Me!</Text>
         </View>)
     }
@@ -213,17 +296,3 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 });
-
-
-/*<View style={{ marginStart: 4, marginEnd: 4}}>
-                        <TouchableOpacity
-                            onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
-                            <View style={styles.box}>
-                                <Ionicons name={'person-circle-outline'} size={40} color={'black'} />
-                                <Text style={styles.username}>{data.name} {data.lastName}</Text>
-                            </View>
-                            <View>
-                            <Text style={styles.userMessage}>{data.name} {data.lastName}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>*/

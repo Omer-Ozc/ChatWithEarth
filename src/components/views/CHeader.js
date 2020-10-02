@@ -38,7 +38,6 @@ export default class CHeader extends Component {
     }
 
     render() {
-        console.log("uid porps", this.props.uid)
         return (
             <View style={styles.headerContainer}>
                 <View style={styles.Container}>

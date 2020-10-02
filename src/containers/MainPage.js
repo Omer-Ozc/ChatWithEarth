@@ -24,8 +24,18 @@ export default class MainPage extends Component {
     this.getData()
     this.getMap()
     FirebaseSimpleService.setOnlineMethod()
+
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      var RandomNumber = Math.floor(Math.random() * 100) + 1 ;
+      this.setState({counts:RandomNumber})
+      this.getData()
+      console.log("focus")
+    });
   }
 
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
 
   serviceFetch = async () => {
     let userData = await FirebaseGetService.getIsUserRegistered()
@@ -57,6 +67,7 @@ export default class MainPage extends Component {
     }
   }
 
+
   NavigateToChat(uid, name, lastName) {
     this.props.navigation.navigate("ChatPage", {
       uid,
@@ -80,11 +91,13 @@ export default class MainPage extends Component {
     return <></>;
   }
 
-  render() {  
-    console.log("main uid",this.state.profileObject.uid)
+  componentWillUnmount() {
+    console.warn("componentWillUnmount")
+  }
+
+  render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-
         <CHeader
           name={this.state.profileObject != null ? this.state.profileObject.name : "Name"}
           lastName={this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
@@ -101,12 +114,13 @@ export default class MainPage extends Component {
         <View>
 
           <FriendListItem
+            counter={this.state.counts}
             ChatPage={(uid, name, lastName) => this.NavigateToChat(uid, name, lastName)}
             navigateMap={() => this.navigateToMap()}
-            navigateToAddFriend ={() => this.navigation()}
-            navigateToMap ={() => this.navigateToMap()}
+            navigateToAddFriend={() => this.navigation()}
+            navigateToMap={() => this.navigateToMap()}
           />
-
+          
         </View>
 
       </View>

@@ -15,7 +15,6 @@ export default class AddFriend extends Component {
             name: '',
             lastName: '',
             friendList: [],
-            
         };
     }
 
@@ -35,7 +34,12 @@ export default class AddFriend extends Component {
         } catch (e) {
             console.log(e)
         }
-        return friendList
+        if(friendList == ""){
+            return []
+        }
+        else{
+            return friendList
+        }
     }
 
     addFriendToObject() {
@@ -85,7 +89,8 @@ export default class AddFriend extends Component {
     removeValue = async () => {
         try {
             const userId = auth().currentUser.uid;
-            await AsyncStorage.removeItem(`@${userId}`)
+            const jsonValue = JSON.stringify("")
+            await AsyncStorage.setItem(`@${userId}`,jsonValue)
         } catch (e) {
             console.log(e)
         }
@@ -98,7 +103,7 @@ export default class AddFriend extends Component {
 
 
     goToBackPage() {
-        this.props.navigation.goBack()
+        this.props.navigation.navigate("MainPage")
     }
 
     handleId(text) {

@@ -28,7 +28,7 @@ export default class MapPage extends Component {
   }
 
   goToBackPage() {
-    this.props.navigation.goBack()
+    this.props.navigation.navigate("MainPage")
   }
 
   componentDidMount = async () => {
