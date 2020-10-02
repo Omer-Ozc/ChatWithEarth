@@ -15,7 +15,8 @@ export default class FriendListItem extends Component {
             uid: '',
             friendList: [],
             fireBaseFriendLists: [],
-            control: true
+            control: true,
+
         };
     }
 
@@ -46,15 +47,13 @@ export default class FriendListItem extends Component {
         this.sortList()
     }
 
+
     sortList() {
         const array = Object.keys(this.state.fireBaseFriendLists)
         return array.map((data, index) => {
             this.setState({ control: true })
             if (this.state.friendList != null) {
                 for (let i = 0; i < this.state.friendList.length; i++) {
-                    console.log("Bakıyoruz", this.state.friendList[i].uid)
-                    console.log("Bakıyoruz DATA: ", data)
-
                     if (this.state.friendList[i].uid == data) {
                         this.setState({ control: false })
                     }
@@ -99,13 +98,15 @@ export default class FriendListItem extends Component {
         return (
             this.state.friendList.map((data, index) => {
                 return (
-                    <View style={{ marginStart: 4, marginEnd: 4 }}>
+                    <View style={{ backgroundColor: 'white', height: "28%", }}>
                         <TouchableOpacity
+                            style={{ borderBottomColor: '#432577', borderBottomWidth: 1 }}
                             onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
-                            <View style={styles.box}>
-                                <Ionicons name={'person-circle-outline'} size={40} color={'black'} />
-                                <Text style={styles.username}>{data.name} {data.lastName}</Text>
+                            <View style={{ top: "2%", marginStart: "1%" }}>
+                                <Ionicons name={'person-circle-outline'} size={60} color={'black'} />
                             </View>
+                            <Text style={{ fontFamily: 'serif', fontWeight: 'bold', top: "15%", left: "17%", fontSize: 20, position: 'absolute', color: "#432577" }}>{data.name} {data.lastName}</Text>
+                            <Text style={{ top: "55%", left: "17.2%", fontSize: 12, position: 'absolute' }}>Son mesaj ön izlemesi eklenecek </Text>
                         </TouchableOpacity>
                     </View>
                 )
@@ -113,25 +114,35 @@ export default class FriendListItem extends Component {
         )
     }
 
-
+    noFriend() {
+        console.log("style")
+        return (<View style={{ alignItems: 'center', top: "50%" }}>
+            <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold' }}>You have not any chat</Text>
+            <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold' }}>You can send a message from here!</Text>
+            <TouchableOpacity
+                onPress={() => this.props.navigateToAddFriend()}>
+                <View>
+                    <MaterialCommunityIcons name={'chat-plus'} size={60} color={'#432577'} style={{ top: "20%" }} />
+                </View>
+            </TouchableOpacity>
+            <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "10%" }}>You can talk with earth!</Text>
+            <TouchableOpacity
+                onPress={() => this.props.navigateToMap()}>
+                <View>
+                    <Ionicons name={'earth'} size={60} color={'#432577'}  style = {{top:"50%"}} />
+                </View>
+            </TouchableOpacity>
+            <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "13%" }}>Press Me!</Text>
+        </View>)
+    }
 
     render() {
 
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <View style={styles.headerContent}>
-                        <Ionicons name={'person-circle-outline'} size={80} color={'black'} />
-                        <Text style={styles.name}>{this.props.name} {this.props.lastName}</Text>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigateMap()}>
-                            <MaterialCommunityIcons name={'google-maps'} size={35} color={'black'} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                {this.state.friendList != null ?
+                {this.state.friendList != "" ?
                     this.buildFriendList()
-                    : null}
+                    : this.noFriend()}
             </View>
         );
     }
@@ -192,5 +203,27 @@ const styles = StyleSheet.create({
         fontSize: 22,
         alignSelf: 'center',
         marginLeft: 10
+    },
+
+    userMessage: {
+        color: "#20B2AA",
+        fontSize: 15,
+        alignSelf: 'center',
+        marginLeft: 10,
+        alignItems: 'center'
     }
 });
+
+
+/*<View style={{ marginStart: 4, marginEnd: 4}}>
+                        <TouchableOpacity
+                            onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
+                            <View style={styles.box}>
+                                <Ionicons name={'person-circle-outline'} size={40} color={'black'} />
+                                <Text style={styles.username}>{data.name} {data.lastName}</Text>
+                            </View>
+                            <View>
+                            <Text style={styles.userMessage}>{data.name} {data.lastName}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>*/

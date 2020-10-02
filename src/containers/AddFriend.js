@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, Dimensions, Button } from 'react-nat
 import CHeader from '../components/views/CHeader'
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
+import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 
 const { width: WIDTH } = Dimensions.get('window')
 
@@ -88,7 +89,9 @@ export default class AddFriend extends Component {
         } catch (e) {
             console.log(e)
         }
+        await FirebaseSimpleService.removeAllMessage()
         console.log('Done.')
+        
     }
 
 
@@ -114,7 +117,9 @@ export default class AddFriend extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <CHeader
-                    backPage={() => this.goToBackPage()} />
+                    headerTitle = "Add Friend"
+                    backPage={() => this.goToBackPage()}
+                    showPlus="off" />
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <TextInput
                         style={styles.input}

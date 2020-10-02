@@ -13,8 +13,9 @@ export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      profileObject :'',
-      counter : 0,
+      profileObject: '',
+      counts: 0,
+      refresh: false
     };
   }
 
@@ -26,13 +27,13 @@ export default class MainPage extends Component {
   }
 
 
-
   serviceFetch = async () => {
     let userData = await FirebaseGetService.getIsUserRegistered()
     if (userData === null) {
       this.props.navigation.navigate('RegisterProfilePage')
     }
-    this.setState({profileObject : await FirebaseGetService.getIsUserRegistered()})
+    this.setState({ profileObject: await FirebaseGetService.getIsUserRegistered() })
+    console.log("profile object", this.state.profileObject)
   }
 
   goToBackPage() {
@@ -41,7 +42,7 @@ export default class MainPage extends Component {
   navigation() {
     this.props.navigation.navigate("AddFriend")
   }
-  navigateToMap(){
+  navigateToMap() {
     this.props.navigation.navigate("MapPage")
   }
 
@@ -56,18 +57,18 @@ export default class MainPage extends Component {
     }
   }
 
-  NavigateToChat(uid,name,lastName){
-    this.props.navigation.navigate("ChatPage",{
+  NavigateToChat(uid, name, lastName) {
+    this.props.navigation.navigate("ChatPage", {
       uid,
       name,
       lastName
     })
   }
 
-  setMapCoordsAndIsOnlineMethod(info){
+  setMapCoordsAndIsOnlineMethod(info) {
     FirebaseSimpleService.setOnlineMethod(info.coords.latitude, info.coords.longitude)
   }
-  
+
   getMap = () => {
     Geolocation.getCurrentPosition(
       (info) => this.setMapCoordsAndIsOnlineMethod(info),
@@ -79,23 +80,32 @@ export default class MainPage extends Component {
     return <></>;
   }
 
-  render() {
+  render() {  
+    console.log("main uid",this.state.profileObject.uid)
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
 
         <CHeader
+          name={this.state.profileObject != null ? this.state.profileObject.name : "Name"}
+          lastName={this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
+          uid={this.state.profileObject != null ? this.state.profileObject.uid : "uid"}
+          age={this.state.profileObject != null ? this.state.profileObject.age : "age"}
+          showMap="on"
+          showGoBack="off"
           headerTitle='Chats'
           backPage={() => this.goToBackPage()}
           navigatons={() => this.navigation()}
-          />
-
+          navigatonsToMap={() => this.navigateToMap()
+          }
+        />
         <View>
 
           <FriendListItem
-          name = {this.state.profileObject  != null ? this.state.profileObject.name : "Name"}
-          lastName = {this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
-          ChatPage = {(uid,name,lastName) => this.NavigateToChat(uid,name,lastName)}
-          navigateMap = {() => this.navigateToMap()} />
+            ChatPage={(uid, name, lastName) => this.NavigateToChat(uid, name, lastName)}
+            navigateMap={() => this.navigateToMap()}
+            navigateToAddFriend ={() => this.navigation()}
+            navigateToMap ={() => this.navigateToMap()}
+          />
 
         </View>
 

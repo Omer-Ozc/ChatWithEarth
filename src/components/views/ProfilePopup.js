@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
 import Modal from 'react-native-modal';
 import { color } from 'react-native-reanimated';
 
@@ -18,24 +18,33 @@ export default class ProfilePopup extends Component {
 
 
     render() {
+        console.log("uid", this.props.uid)
         return (
             <View>
                 <Modal isVisible={this.state.isVisible}
                     animationIn="slideInUp"
                     animationOut="slideOutDown">
                     <View style={styles.Container}>
+                        
                         <Image
                             style={styles.profilImage}
                             source={require('../../res/images/personicon.png')} />
 
                         <Text style={styles.text}>{this.props.name} {this.props.lastName}</Text>
                         <Text style={styles.text}>{this.props.age}</Text>
+                        {this.props.showID === "on" ? null :
+                            <TouchableOpacity
+                                style={styles.sendMessageBtn}
+                                onPress={() => { this.props.goToChatPage(this.props.uid, this.props.name, this.props.lastName) }}>
+                                <Text style={{ color: "white" }}>Send A Message</Text>
+                            </TouchableOpacity>
+                        }
 
-                        <TouchableOpacity
-                            style={styles.sendMessageBtn}
-                            onPress={() => {this.props.goToChatPage(this.props.uid,this.props.name, this.props.lastName)}}>
-                            <Text style={{ color: "white" }}>Send A Message</Text>
-                        </TouchableOpacity>
+                        {this.props.showID === "on" ?
+                            <TextInput
+                                style={{top:"10%"}}
+                                value={this.props.uid} />
+                            : null}
 
                         <TouchableOpacity
                             style={styles.closeBtn}
@@ -66,7 +75,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,
-        top: 55
+        top: 50
     },
     sendMessageBtn: {
         backgroundColor: '#432577',
@@ -78,6 +87,8 @@ const styles = StyleSheet.create({
         top: 45
     },
     text: {
+        fontFamily:"serif",
+        color:'#432577',
         fontSize: 18,
         fontWeight: 'bold',
         top: 20

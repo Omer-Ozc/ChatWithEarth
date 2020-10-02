@@ -12,6 +12,7 @@ import MapPage from './src/containers/MapPage'
 
 
 
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -37,10 +38,6 @@ export default class App extends Component {
           <Stack.Screen name="AddFriend" component={AddFriend} />
           <Stack.Screen name="ChatPage" component={ChatPage} />
           <Stack.Screen name="MapPage" component={MapPage} />
-          
-
-
-
         </Stack.Navigator>
       </NavigationContainer>
     );

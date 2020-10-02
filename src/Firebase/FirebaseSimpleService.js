@@ -37,8 +37,6 @@ export default class FirebaseSimpleSerivce {
                 age: userAge,
             }
         ).then(() => console.log('Data Online Users is Success'))
-
-
         }
 
     static setSendMessage(messageFrom, txtMessage) {
@@ -58,6 +56,14 @@ export default class FirebaseSimpleSerivce {
         })
 
     }
+
+    static removeAllMessage = async() => {
+        const userId = auth().currentUser.uid;
+        const reference = database().ref(`/Users/${userId}/messages`)
+        await reference.remove().then(() => console.log('Data set is success'))
+    }
+
+    
 
     
 }
