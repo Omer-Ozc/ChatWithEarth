@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import moment from 'moment';
+import storage from '@react-native-firebase/storage';
 
 export default class FirebaseSimpleSerivce {
 
@@ -62,6 +63,19 @@ export default class FirebaseSimpleSerivce {
         const reference = database().ref(`/Users/${userId}/messages`)
         await reference.remove().then(() => console.log('Data set is success'))
     }
+
+    static setImage = async(imagePaths) => {
+        const userId = auth().currentUser.uid;
+        const reference = storage().ref(userId);
+        await reference.putFile(imagePaths);
+    }
+
+    static setDefaultImage = async(imagePaths) => {
+        const userId = auth().currentUser.uid;
+        const reference = storage().ref(userId);
+        await reference.putFile(imagePaths);
+    }
+
 
     
 

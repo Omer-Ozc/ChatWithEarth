@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, TouchableOpacity, Button } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, Button, Image } from 'react-native';
 import CHeader from '../components/views/CHeader'
 import Geolocation from '@react-native-community/geolocation';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
@@ -23,7 +23,8 @@ export default class MapPage extends Component {
       count: [],
       isUserOnlineAndMapCoords: [],
       isShow: false,
-      profile: ''
+      profile: '',
+      mapPhoto: []
     };
   }
 
@@ -35,6 +36,7 @@ export default class MapPage extends Component {
     const MapUsers = await FirebaseGetService.getUserAllCoordsAndIsOnline()
     const map = Object.keys(MapUsers)
     this.setState({ count: map })
+    await this.fetchAllImage()
     this.setState({ isUserOnlineAndMapCoords: MapUsers })
 
   }
@@ -83,13 +85,22 @@ export default class MapPage extends Component {
     }
   }
 
-  goToChatPage(uid,name,lastName){
+  fetchAllImage = async () => {
+    let userPhotoArray =[]
+    for (let i = 0; i < this.state.count.length; i++) {
+     userPhotoArray[i] = await FirebaseGetService.getUserImage(this.state.count[i])
+    }
+    this.setState({ mapPhoto: userPhotoArray })
+    console.log(this.state.mapPhoto)
+  }
+
+  goToChatPage(uid, name, lastName) {
     this.props.navigation.navigate("ChatPage", {
       uid,
       name,
       lastName
     })
-    this.setState({isShow:false})
+    this.setState({ isShow: false })
   }
   closePopup() {
     this.setState({ isShow: false })
@@ -112,10 +123,16 @@ export default class MapPage extends Component {
           let name = this.state.isUserOnlineAndMapCoords[item].name
           let lastName = this.state.isUserOnlineAndMapCoords[item].lastName
           let age = this.state.isUserOnlineAndMapCoords[item].age
-
-
-          return (<Marker coordinate={Coords}
-            image={require('../res/images/personicon.png')}>
+          
+          return (<Marker coordinate={Coords}>
+            {this.state.mapPhoto[index] != null ? 
+            <Image
+            source = {{ uri: this.state.mapPhoto[index], }}
+            style = {{width:50, height:50, borderRadius:50}}/>
+            :
+            <Image
+            source = {require('../res/images/personicon.png')}
+            style = {{width:50, height:50, borderRadius:50}}/> }
             <Callout
               onPress={() => this.btnPressed(uid, name, lastName, age)}>
               <View style={{ alignItems: 'center', }}>

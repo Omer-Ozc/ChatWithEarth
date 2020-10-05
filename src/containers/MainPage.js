@@ -29,7 +29,6 @@ export default class MainPage extends Component {
       var RandomNumber = Math.floor(Math.random() * 100) + 1 ;
       this.setState({counts:RandomNumber})
       this.getData()
-      console.log("focus")
     });
   }
 
@@ -43,7 +42,6 @@ export default class MainPage extends Component {
       this.props.navigation.navigate('RegisterProfilePage')
     }
     this.setState({ profileObject: await FirebaseGetService.getIsUserRegistered() })
-    console.log("profile object", this.state.profileObject)
   }
 
   goToBackPage() {
@@ -89,10 +87,6 @@ export default class MainPage extends Component {
       },
     );
     return <></>;
-  }
-
-  componentWillUnmount() {
-    console.warn("componentWillUnmount")
   }
 
   render() {

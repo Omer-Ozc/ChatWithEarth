@@ -1,5 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
+
 
 export default class FirebaseGetSerivce {
 
@@ -73,6 +75,15 @@ export default class FirebaseGetSerivce {
                 messageList = snapshot.val()
             });
         return messageList
+    }
+
+    static getUserImage = async (uid) => {
+
+        const url = await storage()
+            .ref(uid)
+            .getDownloadURL();
+            console.log(url)
+            return url
     }
 
 

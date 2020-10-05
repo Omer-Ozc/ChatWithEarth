@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProfilePopup from '../views/ProfilePopup'
 import auth from '@react-native-firebase/auth';
+import FirebaseGetService from '../../Firebase/FirebaseGetService'
 
 const userId = auth().currentUser.uid;
-
+let image; 
 export default class CHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isShow: false
+            isShow: false,
+            images:""
         };
+    }
+
+    componentDidMount = async () =>{
+        image = await FirebaseGetService.getUserImage(userId)
+        this.setState({images:image})
     }
 
     setPopup() {
@@ -44,7 +51,7 @@ export default class CHeader extends Component {
                     {this.props.showGoBack != 'off' ?
                         <TouchableOpacity style={styles.touchableArrowStyle}
                             onPress={() => this.props.backPage()} >
-                            <Ionicons name={'arrow-back-outline'} size={26} color={'white'} />
+                            <Ionicons name = "arrow-back-outline" size = {26} color = "white"/>
                         </TouchableOpacity>
                         : null}
                     {this.showPopup()}
@@ -58,7 +65,12 @@ export default class CHeader extends Component {
                     {this.props.headerTitle === "Chats" ?
                         <TouchableOpacity style={styles.profileImage}
                             onPress={() => this.setPopup()} >
-                            <Ionicons name={'person-circle-outline'} size={40} color={'white'} />
+                            {this.state.images != null ? 
+                            <Image
+                            source={{uri : this.state.images}}
+                            style = {{width:40, height:40, borderRadius:50}}/>
+                            :
+                            <Ionicons name={'person-circle-outline'} size={40} color={'white'} />                        }
                         </TouchableOpacity>
                         : null}
 
