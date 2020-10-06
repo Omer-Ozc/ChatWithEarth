@@ -44,6 +44,7 @@ export default class FriendListItem extends Component {
         this.setState({ uid: userId })
         let friendList = await this.getData()
         { friendList != [] ? this.setState({ friendList: friendList }) : this.setState({ friendList: [] }) }
+        this.fetchImages()
         let messageList = await FirebaseGetSerivce.getUserAllMessageList()
         this.setState({ fireBaseFriendLists: messageList })
         this.sortList()
@@ -68,18 +69,18 @@ export default class FriendListItem extends Component {
 
 
         if (JSON.stringify(friendList) !== JSON.stringify(this.state.friendList)) {
-            console.log("state friendlist karşılaştırması")
+            //console.log("state friendlist karşılaştırması")
             { friendList != null ? this.setState({ friendList: friendList }) : this.setState({ friendList: [] }) }
-            console.log(this.state.friendList)
+           // console.log(this.state.friendList)
         }
 
         if (JSON.stringify(messageList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
-            console.log("firebase friendlist karşılaştırması")
+           // console.log("firebase friendlist karşılaştırması")
             this.setState({ fireBaseFriendLists: messageList })
         }
 
         if (JSON.stringify(this.state.friendList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
-            console.log("firebase - state friendlist karşılaştırması")
+            //console.log("firebase - state friendlist karşılaştırması")
         }
 
         for (let i = 0; i < friendListObj.length; i++) {
@@ -98,9 +99,9 @@ export default class FriendListItem extends Component {
                 }
             }
         }
-        console.log(control)
         if (control) {
             this.sortList()
+            this.fetchImages()
         }
 
 
@@ -169,37 +170,40 @@ export default class FriendListItem extends Component {
     }
 
     fetchImages = async () => {
+        console.log("fetch")
         let imageArray = []
         if (this.state.friendList != null && this.state.friendList != "") {
 
             for (let i = 0; i < this.state.friendList.length; i++) {
                 imageArray[i] = await FirebaseGetSerivce.getUserImage(this.state.friendList[i].uid)
-                this.state.images.push(imageArray[i])
-
+                //this.state.images.push(imageArray[i])
             }
+            this.setState({images : imageArray})
         }
+
+
         //this.setState({ images: imageArray })
 
     }
 
     buildFriendList() {
+        //this.fetchImages()
         if (this.state.friendList != [] && this.state.friendList != null) {
             return (
                 this.state.friendList.map((data, index) => {
                     let key = index
-                console.log("state : ",this.state.images[index])
 
                     return (
                         <View style={{ backgroundColor: 'white' }}>
                             <TouchableOpacity
                                 style={{ borderBottomColor: '#432577', borderBottomWidth: 1 }}
-                                onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName)}>
+                                onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName, this.state.images[index])}>
                                 <View style={{ top: "2%", marginStart: "1%" }}>
                                     {this.state.images[index] != null ?
                                         <Image
                                             source={{ uri: this.state.images[index] }}
-                                            style={{ width: 60, height: 60, borderRadius: 50, marginBottom:2 }} />
-                                        :
+                                            style={{ width: 60, height: 60, borderRadius: 50, marginBottom:4 }} />
+                                            :
                                         <Ionicons name={'person-circle-outline'} size={60} color={'black'} />}
                                 </View>
                                 <Text style={{ fontFamily: 'serif', fontWeight: 'bold', top: "15%", left: "17%", fontSize: 20, position: 'absolute', color: "#432577" }}>{data.name} {data.lastName}</Text>
@@ -238,7 +242,6 @@ export default class FriendListItem extends Component {
     }
 
     render() {
-
         return (
             <View style={styles.container}>
                 {this.state.friendList != null && this.state.friendList != "" ?

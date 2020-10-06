@@ -18,6 +18,8 @@ export default class LoginPage extends Component {
       press: false,
       email: '',
       password: '',
+      loading: true,
+      user: null
     };
   }
 
@@ -62,10 +64,30 @@ export default class LoginPage extends Component {
       });
   }
 
+  onAuthStateChanged(user) {
+    this.setState({ user: user });
+    if (this.state.initializing) {
+      this.setState({ initializing: false })
+    }
+  }
+
+  componentDidMount() {
+    auth().onAuthStateChanged((user) => {
+      this.setState({ loading: false, user });
+    });
+  }
+
   
 
 
   render() {
+
+    if (this.state.loading) {return null;}
+    if(this.state.user != null){
+      this.props.navigation.navigate("MainPage")
+    }
+
+    
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', }}>
         <View syle={styles.logoContainer}>

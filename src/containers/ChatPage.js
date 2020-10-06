@@ -134,8 +134,12 @@ export default class ChatPage extends Component {
       <View style={{ flex: 1, backgroundColor:'white'}}>
 
         <CHeader
+          uid = {this.state.chatWith.uid}
+          name = {this.state.chatWith.name}
+          lastName = {this.state.chatWith.lastName}
           headerTitle={this.state.Header}
           backPage={() => this.goToBackPage()}
+          userImage = {this.state.chatWith.userImage}
           showPlus="off"
           pageType="ChatPage" />
 

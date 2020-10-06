@@ -115,7 +115,7 @@ export default class ProfilePopup extends Component {
 
                         <Text style={styles.text}>{this.props.name} {this.props.lastName}</Text>
                         <Text style={styles.text}>{this.props.age}</Text>
-                        {this.props.showID === "on" ? null :
+                        {this.props.showID === "on" || this.props.showUid ==="off" ? null :
                             <TouchableOpacity
                                 style={styles.sendMessageBtn}
                                 onPress={() => { this.props.goToChatPage(this.props.uid, this.props.name, this.props.lastName) }}>

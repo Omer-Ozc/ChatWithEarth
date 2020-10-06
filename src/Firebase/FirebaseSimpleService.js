@@ -6,15 +6,31 @@ import storage from '@react-native-firebase/storage';
 export default class FirebaseSimpleSerivce {
 
     static setOnlineMethod(latitude, longitude) {
-        const userId = auth().currentUser.uid;
-        const reference = database().ref(`/onlineUsers/${userId}`);
-        // Set the /users/:userId value to true
-        reference.update({
-            isOnline: true,
-            latitude: latitude,
-            longitude: longitude
-        }).then(() => console.log('Online presence set'));
+      
+        function bekle() {
+            const userId = auth().currentUser.uid;
+            const reference = database().ref(`/onlineUsers/${userId}`);
+            // Set the /users/:userId value to true
+            reference.update({
+                isOnline: true,
+                latitude: latitude,
+                longitude: longitude
+            }).then(() => console.log('Online presence set'));
+        }
+
+        setTimeout(bekle, 4000);
+
+        /*
+                const userId =  auth().currentUser.uid;
+                const reference = database().ref(`/onlineUsers/${userId}`);
+                // Set the /users/:userId value to true
+                reference.update({
+                    isOnline: true,
+                    latitude: latitude,
+                    longitude: longitude
+                }).then(() => console.log('Online presence set'));*/
     }
+
 
     static setRegisterMethod = async(userName, userLastName, userAge) => {
         const userId = auth().currentUser.uid;

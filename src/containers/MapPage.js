@@ -128,7 +128,7 @@ export default class MapPage extends Component {
             {this.state.mapPhoto[index] != null ? 
             <Image
             source = {{ uri: this.state.mapPhoto[index], }}
-            style = {{width:50, height:50, borderRadius:50}}/>
+            style = {{width:40, height:40, borderRadius:40}}/>
             :
             <Image
             source = {require('../res/images/personicon.png')}

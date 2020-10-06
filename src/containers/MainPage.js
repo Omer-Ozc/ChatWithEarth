@@ -66,11 +66,12 @@ export default class MainPage extends Component {
   }
 
 
-  NavigateToChat(uid, name, lastName) {
+  NavigateToChat(uid, name, lastName, userImage) {
     this.props.navigation.navigate("ChatPage", {
       uid,
       name,
-      lastName
+      lastName,
+      userImage
     })
   }
 
@@ -89,10 +90,15 @@ export default class MainPage extends Component {
     return <></>;
   }
 
+  goToLoginPage(){
+    this.props.navigation.navigate("LoginPage")
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <CHeader
+          showExit= "on"
           name={this.state.profileObject != null ? this.state.profileObject.name : "Name"}
           lastName={this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
           uid={this.state.profileObject != null ? this.state.profileObject.uid : "uid"}
@@ -102,14 +108,14 @@ export default class MainPage extends Component {
           headerTitle='Chats'
           backPage={() => this.goToBackPage()}
           navigatons={() => this.navigation()}
-          navigatonsToMap={() => this.navigateToMap()
-          }
+          navigatonsToMap={() => this.navigateToMap()}
+          goToLoginPage = {() => this.goToLoginPage()}
         />
         <View>
 
           <FriendListItem
             counter={this.state.counts}
-            ChatPage={(uid, name, lastName) => this.NavigateToChat(uid, name, lastName)}
+            ChatPage={(uid, name, lastName, userImage) => this.NavigateToChat(uid, name, lastName, userImage)}
             navigateMap={() => this.navigateToMap()}
             navigateToAddFriend={() => this.navigation()}
             navigateToMap={() => this.navigateToMap()}

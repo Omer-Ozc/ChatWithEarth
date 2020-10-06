@@ -82,7 +82,6 @@ export default class FirebaseGetSerivce {
         const url = await storage()
             .ref(uid)
             .getDownloadURL();
-            console.log(url)
             return url
     }
 

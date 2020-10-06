@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,20 +7,26 @@ import ProfilePopup from '../views/ProfilePopup'
 import auth from '@react-native-firebase/auth';
 import FirebaseGetService from '../../Firebase/FirebaseGetService'
 
-const userId = auth().currentUser.uid;
-let image; 
+let image;
+let userImage = null
 export default class CHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isShow: false,
-            images:""
+            images: "",
+            userID: "",
+            imagesUser:"",
         };
     }
 
-    componentDidMount = async () =>{
+    componentDidMount = async () => {
+        const userId = auth().currentUser.uid;
+        this.setState({ userID: userId })
         image = await FirebaseGetService.getUserImage(userId)
-        this.setState({images:image})
+        this.setState({ images: image })
+        {this.props.uid != null ? userImage = await FirebaseGetService.getUserImage(this.props.uid) : null }
+        {userImage != null ? this.setState({imagesUser:userImage}) : null}
     }
 
     setPopup() {
@@ -30,19 +36,46 @@ export default class CHeader extends Component {
     closePopup() {
         this.setState({ isShow: false })
     }
+    setUserPopup() {
+        this.setState({ isShow: true })
+        this.showUserPopup()
+    }
+
+    showUserPopup() {
+        if (this.state.isShow) {
+            return (<ProfilePopup
+                showUid ="off"
+                uid={this.props.uid}
+                name={this.props.name}
+                lastName={this.props.lastName}
+                closePopup={() => this.closePopup()} />)
+        }
+        else { return null }
+    }
 
     showPopup() {
         if (this.state.isShow) {
             return (<ProfilePopup
-                showID = "on"
-                uid={userId}
+                showID="on"
+                uid={this.state.userID}
                 name={this.props.name}
                 lastName={this.props.lastName}
                 age={this.props.age}
                 closePopup={() => this.closePopup()} />)
         }
-        else {return null}
+        else { return null }
     }
+
+
+
+    signOut() {
+        auth()
+            .signOut()
+            .then(() => console.log('User signed out!'));
+
+        this.props.goToLoginPage()
+    }
+
 
     render() {
         return (
@@ -51,27 +84,40 @@ export default class CHeader extends Component {
                     {this.props.showGoBack != 'off' ?
                         <TouchableOpacity style={styles.touchableArrowStyle}
                             onPress={() => this.props.backPage()} >
-                            <Ionicons name = "arrow-back-outline" size = {26} color = "white"/>
-                        </TouchableOpacity>
-                        : null}
-                    {this.showPopup()}
-                    {this.props.pageType === "ChatPage" ?
-                        <TouchableOpacity style={styles.profileImage}
-                            onPress={() => Alert.alert("Profil Ekranına gidicek. (Daha oluşturulmadı.)")} >
-                            <Ionicons name={'person-circle-outline'} size={40} color={'white'} />
+                            <Ionicons name="arrow-back-outline" size={26} color="white" />
                         </TouchableOpacity>
                         : null}
 
+
+
+                    {this.props.pageType === "ChatPage" ?
+                        <View>
+                            {this.showUserPopup()}
+                            <TouchableOpacity style={styles.profileImage}
+                                onPress={() => this.setUserPopup()} >
+                                {this.props.userImage != null ?
+                                    <Image
+                                        source={{ uri: this.props.userImage }}
+                                        style={{ width: 40, height: 40, borderRadius: 50 }} />
+                                    :
+                                    <Ionicons name={'person-circle-outline'} size={40} color={'white'} />}
+                            </TouchableOpacity>
+                        </View>
+                        : null}
+
                     {this.props.headerTitle === "Chats" ?
-                        <TouchableOpacity style={styles.profileImage}
-                            onPress={() => this.setPopup()} >
-                            {this.state.images != null ? 
-                            <Image
-                            source={{uri : this.state.images}}
-                            style = {{width:40, height:40, borderRadius:50}}/>
-                            :
-                            <Ionicons name={'person-circle-outline'} size={40} color={'white'} />                        }
-                        </TouchableOpacity>
+                        <View>
+                            {this.showPopup()}
+                            <TouchableOpacity style={styles.profileImage}
+                                onPress={() => this.setPopup()} >
+                                {this.state.images != null ?
+                                    <Image
+                                        source={{ uri: this.state.images }}
+                                        style={{ width: 40, height: 40, borderRadius: 50 }} />
+                                    :
+                                    <Ionicons name={'person-circle-outline'} size={40} color={'white'} />}
+                            </TouchableOpacity>
+                        </View>
                         : null}
 
 
@@ -92,6 +138,14 @@ export default class CHeader extends Component {
                             style={styles.touchableStyle}
                             onPress={() => this.props.navigatons()}>
                             <AntDesign name={'plus'} size={26} color={'white'} />
+                        </TouchableOpacity>
+                        : null}
+
+                    {this.props.showExit === "on" ?
+                        <TouchableOpacity
+                            style={{ left: 20 }}
+                            onPress={() => this.signOut()}>
+                            <Ionicons name={'exit-outline'} size={30} color={'white'} />
                         </TouchableOpacity>
                         : null}
 
