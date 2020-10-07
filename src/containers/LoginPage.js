@@ -72,6 +72,10 @@ export default class LoginPage extends Component {
   }
 
   componentDidMount() {
+    this.execAuth()
+  }
+
+  execAuth(){
     auth().onAuthStateChanged((user) => {
       this.setState({ loading: false, user });
     });
