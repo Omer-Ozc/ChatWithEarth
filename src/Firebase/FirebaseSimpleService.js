@@ -7,7 +7,7 @@ export default class FirebaseSimpleSerivce {
 
     static setOnlineMethod(latitude, longitude) {
       
-        function bekle() {
+       // function bekle() {
             const userId = auth().currentUser.uid;
             const reference = database().ref(`/onlineUsers/${userId}`);
             // Set the /users/:userId value to true
@@ -16,9 +16,9 @@ export default class FirebaseSimpleSerivce {
                 latitude: latitude,
                 longitude: longitude
             }).then(() => console.log('Online presence set'));
-        }
+       // }
 
-        setTimeout(bekle, 4000);
+        //setTimeout(bekle, 4000);
 
         /*
                 const userId =  auth().currentUser.uid;

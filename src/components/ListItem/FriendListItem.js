@@ -31,13 +31,16 @@ export default class FriendListItem extends Component {
         }
 
         let StorageObjectKeys = []
+        if(this.state.friendList !=null){
         for (let i = 0; i < this.state.friendList.length; i++) {
             StorageObjectKeys[i] = this.state.friendList[i].uid
-        }
+        }}
+        
         let NextStorageObjectKeys = []
+        if(nextState.friendList !=null){
         for (let i = 0; i < nextState.friendList.length; i++) {
             NextStorageObjectKeys[i] = nextState.friendList[i].uid
-        }
+        }}
 
         /* console.log("FirebaseNextStateObjectKeys : ", FirebaseNextStateObjectKeys)
          console.log("FirebaseStateObjectKeys : ", FirebaseStateObjectKeys)

@@ -78,10 +78,9 @@ export default class FirebaseGetSerivce {
     }
 
     static getUserImage = async (uid) => {
-
-        const url = await storage()
-            .ref(uid)
-            .getDownloadURL();
+            const url = await storage()
+                .ref(uid)
+                .getDownloadURL();
             return url
     }
 

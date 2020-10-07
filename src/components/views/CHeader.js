@@ -16,7 +16,6 @@ export default class CHeader extends Component {
             isShow: false,
             images: "",
             userID: "",
-            imagesUser:"",
         };
     }
 
@@ -25,8 +24,6 @@ export default class CHeader extends Component {
         this.setState({ userID: userId })
         image = await FirebaseGetService.getUserImage(userId)
         this.setState({ images: image })
-        {this.props.uid != null ? userImage = await FirebaseGetService.getUserImage(this.props.uid) : null }
-        {userImage != null ? this.setState({imagesUser:userImage}) : null}
     }
 
     setPopup() {
@@ -65,7 +62,6 @@ export default class CHeader extends Component {
         }
         else { return null }
     }
-
 
 
     signOut() {

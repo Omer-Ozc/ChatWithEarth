@@ -30,6 +30,8 @@ export default class MainPage extends Component {
       this.setState({counts:RandomNumber})
       this.getData()
     });
+
+    
   }
 
   componentWillUnmount() {

@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Dimensions, Image, TouchableOpacity } from 'react-native';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
-import logo from '../res/images/earthLogo.jpg'
-
+import ImagePicker from 'react-native-image-picker';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 const { width: WIDTH } = Dimensions.get('window')
+
+const options = {
+    title: 'Select Avatar',
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    },
+};
 
 export default class RegisterProfilePage extends Component {
     constructor(props) {
@@ -14,8 +22,51 @@ export default class RegisterProfilePage extends Component {
             name: '',
             lastName: '',
             age: '',
+            userAvatar: null,
+            path: ""
         };
     }
+
+
+    uploadToFirebase = async (path) => {
+        await FirebaseSimpleService.setImage(path)
+    }
+
+
+    imagePicker() {
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                const source = response;
+
+                // You can also display the image using data:
+                const urli = { uri: 'data:image/jpeg;base64,' + response.data };
+                //console.log("Source", source.path)
+
+                this.setState({
+                    userAvatar: urli,
+                    path: source.path
+                });
+                this.uploadToFirebase(source.path)
+            }
+
+        });
+
+    }
+
+    /*shouldComponentUpdate(nextProps, nextState){
+        if(JSON.stringify(nextState.userAvatar) === JSON.stringify(this.state.userAvatar) ){
+            return false
+        }
+        return true
+    }*/
+
+
 
 
     handleName(text) {
@@ -33,8 +84,7 @@ export default class RegisterProfilePage extends Component {
 
     }
 
-    btnPush = async() => {
-        const image = 'src/res/images/personicon.png'
+    btnPush = async () => {
         await FirebaseSimpleService.setRegisterMethod(this.state.name, this.state.lastName, this.state.age)
         await FirebaseSimpleService.setRegisterMethodForOnlineUsers(this.state.name, this.state.lastName, this.state.age)
         this.props.navigation.navigate("MainPage")
@@ -45,9 +95,24 @@ export default class RegisterProfilePage extends Component {
             <View style={styles.Container}>
 
                 <View syle={styles.logoContainer}>
-                    <Image source={logo} style={styles.logo} resizeMode='contain' />
-                    <Text style={styles.logoText}>Chat With Earth</Text>
+                    {this.state.userAvatar != null ?
+                        <TouchableOpacity
+                        onPress= {() => this.imagePicker()}>
+                        <Image
+                            style={styles.profilImage}
+                            resizeMethod='auto'
+                            source={this.state.userAvatar} />
+                        </TouchableOpacity>
+
+                        :
+                        <TouchableOpacity
+                        style = {styles.uploadPhotBtn}
+                        onPress= {() => this.imagePicker()}>
+                            <MaterialIcons name = "add-a-photo" size ={50} color = {"black"} />
+                        </TouchableOpacity>
+                    }
                 </View>
+
 
                 <TextInput
                     style={styles.input}
@@ -71,9 +136,11 @@ export default class RegisterProfilePage extends Component {
 
                 />
 
-                <Button
-                    title='Push'
-                    onPress={() => this.btnPush()} />
+                <TouchableOpacity
+                style = {styles.btnLogin}
+                onPress={() => this.btnPush()}>
+                    <Text style = {{color:"white"}}>Sign In</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -84,7 +151,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
 
     input: {
@@ -115,5 +182,40 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         marginTop: 5,
         opacity: 0.8
-      },
+    },
+
+    profilImage: {
+        marginBottom: 40,
+        borderRadius: 60,
+        width: 200,
+        height: 200,
+        borderWidth: 2,
+        borderColor: "#432577"
+    },
+
+    btnLogin: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 170,
+        height: 45,
+        marginEnd: 10,
+        marginStart: 10,
+        borderRadius: 25,
+        backgroundColor: '#432577',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+
+    uploadPhotBtn:{
+        marginBottom: 40,
+        justifyContent:'center',
+        alignItems:'center',
+        width:200,
+        height:200,
+        borderWidth: 2,
+        borderColor: "#432577",
+        borderRadius: 60,
+
+    }
+
 });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Dimensions, Button } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Dimensions, Button, TouchableOpacity } from 'react-native';
 import CHeader from '../components/views/CHeader'
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
@@ -96,6 +96,8 @@ export default class AddFriend extends Component {
         }
         await FirebaseSimpleService.removeAllMessage()
         console.log('Done.')
+        this.props.navigation.navigate("MainPage")
+
         
     }
 
@@ -140,12 +142,16 @@ export default class AddFriend extends Component {
                         placeholder="Your Friend's Last Name"
                         onChangeText={(text) => this.handleLastName(text)} />
                     <View style={{ flexDirection: 'row' }}>
-                        <Button
-                            title="Add Friend"
-                            onPress={() => this.addFriendToObject()} />
-                        <Button
-                            title="Delete All Friend"
-                            onPress={() => this.removeValue()} />
+                        <TouchableOpacity
+                        onPress={() => this.addFriendToObject()}
+                        style = {styles.btnLogin}>
+                            <Text style = {{color: "white"}}>Add Friend</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={() => this.removeValue()}
+                        style = {styles.btnLogin}>
+                            <Text style = {{color: "white"}}>Delete All Friend</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -165,6 +171,19 @@ const styles = StyleSheet.create({
         marginHorizontal: 25,
         marginBottom: 5
     },
+
+    btnLogin: {
+        justifyContent:'center',
+        alignItems:'center',
+        width: 150,
+        height: 45,
+        marginEnd:10,
+        marginStart:10,
+        borderRadius: 25,
+        backgroundColor: '#432577',
+        justifyContent: 'center',
+        marginTop: 10,
+      },
 
 
 });

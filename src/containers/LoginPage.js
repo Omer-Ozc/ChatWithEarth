@@ -49,7 +49,7 @@ export default class LoginPage extends Component {
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => {
         console.log('User account created & signed in!');
-        this.props.navigation.navigate('MainPage')
+        this.props.navigation.navigate("MainPage")
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
@@ -62,6 +62,15 @@ export default class LoginPage extends Component {
 
         console.error(error);
       });
+  }
+
+  navigateToMainPage(){
+    
+    function wait(){
+     // this.props.navigation.navigate("MainPage")
+    }
+
+    setTimeout(wait, 4000);
   }
 
   onAuthStateChanged(user) {
@@ -148,9 +157,9 @@ export default class LoginPage extends Component {
 
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <GoogleLog
-            onFinish={() => this.props.navigation.navigate("MainPage")} />
+            onFinish={() => {}} />
           <FacebookLog
-            onFinish={() => this.props.navigation.navigate("MainPage")} />
+            onFinish={() => {}} />
         </View>
 
 
