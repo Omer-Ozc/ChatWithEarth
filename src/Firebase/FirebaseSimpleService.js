@@ -7,7 +7,6 @@ export default class FirebaseSimpleSerivce {
 
     static setOnlineMethod(latitude, longitude) {
       
-       // function bekle() {
             const userId = auth().currentUser.uid;
             const reference = database().ref(`/onlineUsers/${userId}`);
             // Set the /users/:userId value to true
@@ -16,19 +15,6 @@ export default class FirebaseSimpleSerivce {
                 latitude: latitude,
                 longitude: longitude
             }).then(() => console.log('Online presence set'));
-       // }
-
-        //setTimeout(bekle, 4000);
-
-        /*
-                const userId =  auth().currentUser.uid;
-                const reference = database().ref(`/onlineUsers/${userId}`);
-                // Set the /users/:userId value to true
-                reference.update({
-                    isOnline: true,
-                    latitude: latitude,
-                    longitude: longitude
-                }).then(() => console.log('Online presence set'));*/
     }
 
 
@@ -71,7 +57,6 @@ export default class FirebaseSimpleSerivce {
         referenceFromTo.update({
             [`${date}_fromChat`]: txtMessage
         })
-
     }
 
     static removeAllMessage = async() => {
@@ -90,6 +75,14 @@ export default class FirebaseSimpleSerivce {
         const userId = auth().currentUser.uid;
         const reference = storage().ref(userId);
         await reference.putFile(imagePaths);
+    }
+
+    static addFriendToFirebase(messageFrom) {
+        const userId = auth().currentUser.uid;
+        const reference = database().ref(`/Users/${userId}/messages/`)
+        reference.update({
+            [`${messageFrom}`] : ""
+        })
     }
 
 

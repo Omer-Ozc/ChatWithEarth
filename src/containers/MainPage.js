@@ -26,12 +26,12 @@ export default class MainPage extends Component {
     FirebaseSimpleService.setOnlineMethod()
 
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      var RandomNumber = Math.floor(Math.random() * 100) + 1 ;
-      this.setState({counts:RandomNumber})
+      var RandomNumber = Math.floor(Math.random() * 100) + 1;
+      this.setState({ counts: RandomNumber })
       this.getData()
     });
 
-    
+
   }
 
   componentWillUnmount() {
@@ -92,15 +92,23 @@ export default class MainPage extends Component {
     return <></>;
   }
 
-  goToLoginPage(){
+  goToLoginPage() {
     this.props.navigation.navigate("LoginPage")
+  }
+
+  sendRandomUserToAddPage(uid, name, lastName) {
+    this.props.navigation.navigate("AddFriend", {
+      uid,
+      name,
+      lastName
+    })
   }
 
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <CHeader
-          showExit= "on"
+          showExit="on"
           name={this.state.profileObject != null ? this.state.profileObject.name : "Name"}
           lastName={this.state.profileObject != null ? this.state.profileObject.lastName : "LastName"}
           uid={this.state.profileObject != null ? this.state.profileObject.uid : "uid"}
@@ -111,7 +119,7 @@ export default class MainPage extends Component {
           backPage={() => this.goToBackPage()}
           navigatons={() => this.navigation()}
           navigatonsToMap={() => this.navigateToMap()}
-          goToLoginPage = {() => this.goToLoginPage()}
+          goToLoginPage={() => this.goToLoginPage()}
         />
         <View>
 
@@ -121,8 +129,9 @@ export default class MainPage extends Component {
             navigateMap={() => this.navigateToMap()}
             navigateToAddFriend={() => this.navigation()}
             navigateToMap={() => this.navigateToMap()}
+            sendRandomUserToAddPage={(uid, name, lastName) => this.sendRandomUserToAddPage(uid, name, lastName)}
           />
-          
+
         </View>
 
       </View>

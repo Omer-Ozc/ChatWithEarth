@@ -4,8 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FirebaseGetSerivce from '../../Firebase/FirebaseGetService'
 
+
+let defaultIndex = 0
 export default class FriendListItem extends Component {
 
     constructor(props) {
@@ -16,7 +19,8 @@ export default class FriendListItem extends Component {
             fireBaseFriendLists: [],
             control: true,
             counter: 0,
-            images: []
+            images: [],
+            allUsers: [],
         };
     }
 
@@ -31,53 +35,67 @@ export default class FriendListItem extends Component {
         }
 
         let StorageObjectKeys = []
-        if(this.state.friendList !=null){
-        for (let i = 0; i < this.state.friendList.length; i++) {
-            StorageObjectKeys[i] = this.state.friendList[i].uid
-        }}
-        
-        let NextStorageObjectKeys = []
-        if(nextState.friendList !=null){
-        for (let i = 0; i < nextState.friendList.length; i++) {
-            NextStorageObjectKeys[i] = nextState.friendList[i].uid
-        }}
+        if (this.state.friendList != null) {
+            for (let i = 0; i < this.state.friendList.length; i++) {
+                StorageObjectKeys[i] = this.state.friendList[i].uid
+            }
+        }
 
-        /* console.log("FirebaseNextStateObjectKeys : ", FirebaseNextStateObjectKeys)
-         console.log("FirebaseStateObjectKeys : ", FirebaseStateObjectKeys)
-         console.log("NextStorageObjectKeys : ", NextStorageObjectKeys)
-         console.log("StorageObjectKeys : ", StorageObjectKeys)*/
+        let NextStorageObjectKeys = []
+        if (nextState.friendList != null) {
+            for (let i = 0; i < nextState.friendList.length; i++) {
+                NextStorageObjectKeys[i] = nextState.friendList[i].uid
+            }
+        }
 
         if (FirebaseNextStateObjectKeys === FirebaseStateObjectKeys) {
-            //console.log("FirebaseNextStateObjectKeys === FirebaseStateObjectKeys")
+            console.log("Girdi 1 ")
             return false
         }
         if (StorageObjectKeys === NextStorageObjectKeys) {
-            //console.log("StorageObjectKeys === NextStorageObjectKeys")
+            console.log("Girdi 2 ")
+
             return false
         }
+
         if (NextStorageObjectKeys !== FirebaseNextStateObjectKeys) {
-            // console.log("NextStorageObjectKeys !== FirebaseNextStateObjectKeys")
             return true
         }
+
+        
 
         return false
     }
 
-
     componentDidMount = async () => {
         const userId = auth().currentUser.uid;
+        let users = await FirebaseGetSerivce.getAllUsers()
+        this.setState({ allUsers: users })
         this.setState({ uid: userId })
         let friendList = await this.getData()
         { friendList != [] ? this.setState({ friendList: friendList }) : this.setState({ friendList: [] }) }
         this.fetchImages()
         let messageList = await FirebaseGetSerivce.getUserAllMessageList()
         this.setState({ fireBaseFriendLists: messageList })
-        this.sortList()
+    }
+
+    randomUser() {
+        let users = Object.keys(this.state.allUsers)
+        var RandomNumber = Math.floor(Math.random() * users.length);
+        console.log("RandomUser : ", users[RandomNumber])
+        if (this.state.uid !== users[RandomNumber]) {
+            this.props.sendRandomUserToAddPage
+                (users[RandomNumber],
+                    this.state.allUsers[users[RandomNumber]].name,
+                    this.state.allUsers[users[RandomNumber]].lastName)
+        }
     }
 
     componentDidUpdate = async (prevProps, prevState) => {
         let friendList = await this.getData()
         let messageList = await FirebaseGetSerivce.getUserAllMessageList()
+
+
         let FirebaseObj = []
         if (this.state.fireBaseFriendLists != null) {
             FirebaseObj = Object.keys(this.state.fireBaseFriendLists)
@@ -92,23 +110,30 @@ export default class FriendListItem extends Component {
         let control = true
 
         if (JSON.stringify(friendList) !== JSON.stringify(this.state.friendList)) {
-            //console.log("state friendlist karşılaştırması")
-            { friendList != null ? this.setState({ friendList: friendList }) : this.setState({ friendList: [] }) }
-            // console.log(this.state.friendList)
+            if(friendList != null){
+                this.setState({ friendList: friendList })
+                this.fetchImages()
+
+            }
+            else {
+                this.setState({ friendList: [] })
+
+            }
         }
 
         if (JSON.stringify(messageList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
-            //console.log("firebase friendlist karşılaştırması")
             this.setState({ fireBaseFriendLists: messageList })
+            this.fetchImages()
         }
-
         if (friendListObj.length === FirebaseObj.length) {
             control = false
         }
+
         if (control) {
             this.sortList()
             this.fetchImages()
         }
+
 
     }
 
@@ -117,6 +142,7 @@ export default class FriendListItem extends Component {
     sortList() {
         let control = true
         if (this.state.fireBaseFriendLists != null) {
+
             const array = Object.keys(this.state.fireBaseFriendLists)
             return array.map((data, index) => {
                 if (control != true) {
@@ -135,10 +161,13 @@ export default class FriendListItem extends Component {
                         uid: data,
                         name: "Nameless Person",
                         lastName: "",
+                        messages: {
+                            message: this.state.fireBaseFriendLists[data]
+                        }
                     }
+                    //console.log("FRİEND OBJECT : ", FriendObject.messages[data])
                     this.state.friendList.push(FriendObject)
                 }
-                //console.warn("STORDATA : ", this.state.friendList)
                 this.storeData(this.state.friendList)
                 this.fetchImages()
             })
@@ -182,23 +211,19 @@ export default class FriendListItem extends Component {
 
             for (let i = 0; i < this.state.friendList.length; i++) {
                 imageArray[i] = await FirebaseGetSerivce.getUserImage(this.state.friendList[i].uid)
-                //this.state.images.push(imageArray[i])
             }
             this.setState({ images: imageArray })
         }
-
-
-        //this.setState({ images: imageArray })
-
     }
 
     buildFriendList() {
-        //this.fetchImages()
+        // this.fetchImages()
         if (this.state.friendList != [] && this.state.friendList != null) {
             return (
                 this.state.friendList.map((data, index) => {
+                    //let str = Object.keys(data.messages.message)
+                    //{data.messages.message[str[0]]}
                     let key = index
-
                     return (
                         <View style={{ backgroundColor: 'white' }}>
                             <TouchableOpacity
@@ -212,8 +237,7 @@ export default class FriendListItem extends Component {
                                         :
                                         <Ionicons name={'person-circle-outline'} size={60} color={'black'} />}
                                 </View>
-                                <Text style={{ fontFamily: 'serif', fontWeight: 'bold', top: "15%", left: "17%", fontSize: 20, position: 'absolute', color: "#432577" }}>{data.name} {data.lastName}</Text>
-                                <Text style={{ top: "55%", left: "17.2%", fontSize: 12, position: 'absolute' }}>Son mesaj ön izlemesi eklenecek </Text>
+                                <Text style={{ fontFamily: 'serif', fontWeight: 'bold', top: "30%", left: "17%", fontSize: 20, position: 'absolute', color: "#432577" }}>{data.name} {data.lastName}</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -228,22 +252,33 @@ export default class FriendListItem extends Component {
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold' }}>You can send a message from here!</Text>
 
             <TouchableOpacity
-                onPress={() => this.props.navigateToAddFriend()}>
+                onPress={() => this.props.navigateToAddFriend()}
+                style={{ top: "5%" }}>
                 <View>
-                    <MaterialCommunityIcons name={'chat-plus'} size={60} color={'#432577'} style={{ top: "20%" }} />
+                    <MaterialCommunityIcons name={'chat-plus'} size={60} color={'#432577'} />
                 </View>
             </TouchableOpacity>
 
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "10%" }}>You can talk with earth!</Text>
 
             <TouchableOpacity
-                onPress={() => this.props.navigateToMap()}>
+                onPress={() => this.props.navigateToMap()}
+                style={{ top: "12%" }}>
                 <View>
-                    <Ionicons name={'earth'} size={60} color={'#432577'} style={{ top: "50%" }} />
+                    <Ionicons name={'earth'} size={60} color={'#432577'} />
                 </View>
             </TouchableOpacity>
 
             <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "13%" }}>Press Me!</Text>
+
+            <TouchableOpacity
+                onPress={() => this.randomUser()}
+                style={{ top: "17%" }} >
+                <FontAwesome name={'random'} size={60} color={'#432577'} />
+            </TouchableOpacity>
+
+            <Text style={{ color: 'black', fontSize: 20, fontFamily: 'serif', fontWeight: 'bold', top: "19%" }}>Take my chance</Text>
+
         </View>)
     }
 
@@ -325,28 +360,4 @@ const styles = StyleSheet.create({
 });
 
 
-
-/*if(nextState.friendList !== this.state.friendList){
-            return true
-        }
-        console.log("next state : ", nextState.fireBaseFriendLists)
-        console.log("State : ", this.state.fireBaseFriendLists )
-        console.log("next state Strogae : ", nextState.friendList)
-        console.log("State Strogae : ", this.state.friendList )
-        if (JSON.stringify(nextState.fireBaseFriendLists) !== JSON.stringify(this.state.fireBaseFriendLists)) {
-         const userId = auth().currentUser.uid;
-            let messageList = []
-            const onValueChange = database()
-                .ref(`/Users/${userId}/messages/`)
-                .on('value', snapshot => {
-                    messageList = snapshot.val()
-                    if (messageList != this.state.fireBaseFriendLists) {
-                        this.setState({ fireBaseFriendLists: messageList })
-                    }
-                });
-        console.log("retrun true")
-        this.sortList()
-
-            return true}
-
-        return false*/
+//<Text style={{ top: "55%", left: "17.2%", fontSize: 12, position: 'absolute' }}>Boş</Text>

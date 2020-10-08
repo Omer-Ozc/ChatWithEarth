@@ -4,6 +4,7 @@ import CHeader from '../components/views/CHeader'
 import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
+import FirebaseGetService from '../Firebase/FirebaseGetService'
 
 const { width: WIDTH } = Dimensions.get('window')
 
@@ -15,14 +16,19 @@ export default class AddFriend extends Component {
             name: '',
             lastName: '',
             friendList: [],
+            allUsers: []
         };
     }
 
     componentDidMount = async () => {
         let friendList = await this.getData()
         { friendList != null ? this.setState({ friendList: friendList }) : null }
+        let users = await FirebaseGetService.getAllUsers()
+        this.setState({ allUsers: users })
         let uids = this.props.route.params.uid
-        this.setState({ uid: uids })
+        let name = this.props.route.params.name
+        let lastName = this.props.route.params.lastName
+        this.setState({ uid: uids, name: name, lastName: lastName })
     }
 
     getData = async () => {
@@ -34,17 +40,16 @@ export default class AddFriend extends Component {
         } catch (e) {
             console.log(e)
         }
-        if(friendList == ""){
+        if (friendList == "") {
             return []
         }
-        else{
+        else {
             return friendList
         }
     }
 
     addFriendToObject() {
         let copyList = this.state.friendList
-        console.log(copyList)
         let control = false
         let index = 0
         for (let i = 0; i < this.state.friendList.length; i++) {
@@ -54,20 +59,27 @@ export default class AddFriend extends Component {
             }
         }
         if (control) {
-            copyList[index] = {
+            let checkList = []
+            checkList[0] = {
                 uid: this.state.uid,
                 name: this.state.name,
-                lastName: this.state.lastName
+                lastName: this.state.lastName,
+               /* messages: {
+                    message: copyList[index].messages.message
+                }*/
             }
+            copyList[index] = checkList[0]
             this.setState({ friendList: copyList })
             this.storeData(this.state.friendList)
         }
         else {
+            console.log("ELSE ÇALIŞTI")
             const FriendObject = {
                 uid: this.state.uid,
                 name: this.state.name,
                 lastName: this.state.lastName,
             }
+            FirebaseSimpleService.addFriendToFirebase(this.state.uid)
             this.state.friendList.push(FriendObject)
             this.storeData(this.state.friendList)
         }
@@ -90,7 +102,7 @@ export default class AddFriend extends Component {
         try {
             const userId = auth().currentUser.uid;
             const jsonValue = JSON.stringify("")
-            await AsyncStorage.setItem(`@${userId}`,jsonValue)
+            await AsyncStorage.setItem(`@${userId}`, jsonValue)
         } catch (e) {
             console.log(e)
         }
@@ -98,7 +110,7 @@ export default class AddFriend extends Component {
         console.log('Done.')
         this.props.navigation.navigate("MainPage")
 
-        
+
     }
 
 
@@ -118,13 +130,26 @@ export default class AddFriend extends Component {
         this.setState({ lastName: text })
     }
 
+    getRandomUser() {
+        const userId = auth().currentUser.uid;
+        let users = Object.keys(this.state.allUsers)
+        var RandomNumber = Math.floor(Math.random() * users.length);
+        console.log("RandomUser : ", users[RandomNumber])
+        if (userId !== users[RandomNumber]) {
+            let uid = users[RandomNumber]
+            let name = this.state.allUsers[users[RandomNumber]].name
+            let lastName = this.state.allUsers[users[RandomNumber]].lastName
+            this.setState({uid:uid, name:name , lastName:lastName})
+        }
+    }
+
 
 
     render() {
         return (
             <View style={{ flex: 1 }}>
                 <CHeader
-                    headerTitle = "Add Friend"
+                    headerTitle="Add Friend"
                     backPage={() => this.goToBackPage()}
                     showPlus="off" />
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -136,23 +161,30 @@ export default class AddFriend extends Component {
                     <TextInput
                         style={styles.input}
                         placeholder="Your Friend's Name"
-                        onChangeText={(text) => this.handleName(text)} />
+                        onChangeText={(text) => this.handleName(text)}
+                        value={this.state.name} />
                     <TextInput
                         style={styles.input}
                         placeholder="Your Friend's Last Name"
-                        onChangeText={(text) => this.handleLastName(text)} />
+                        onChangeText={(text) => this.handleLastName(text)}
+                        value={this.state.lastName} />
                     <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity
-                        onPress={() => this.addFriendToObject()}
-                        style = {styles.btnLogin}>
-                            <Text style = {{color: "white"}}>Add Friend</Text>
+                            onPress={() => this.addFriendToObject()}
+                            style={styles.btnLogin}>
+                            <Text style={{ color: "white" }}>Add Friend</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                        onPress={() => this.removeValue()}
-                        style = {styles.btnLogin}>
-                            <Text style = {{color: "white"}}>Delete All Friend</Text>
+                            onPress={() => this.removeValue()}
+                            style={styles.btnLogin}>
+                            <Text style={{ color: "white" }}>Delete All Friend</Text>
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity
+                        onPress={() => this.getRandomUser()}
+                        style={styles.btnLogin}>
+                        <Text style={{ color: "white" }}>Random User</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -173,17 +205,17 @@ const styles = StyleSheet.create({
     },
 
     btnLogin: {
-        justifyContent:'center',
-        alignItems:'center',
+        justifyContent: 'center',
+        alignItems: 'center',
         width: 150,
         height: 45,
-        marginEnd:10,
-        marginStart:10,
+        marginEnd: 10,
+        marginStart: 10,
         borderRadius: 25,
         backgroundColor: '#432577',
         justifyContent: 'center',
         marginTop: 10,
-      },
+    },
 
 
 });

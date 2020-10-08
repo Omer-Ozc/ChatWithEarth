@@ -19,6 +19,18 @@ export default class FirebaseGetSerivce {
         return profileObject
     }
 
+    static getAllUsers = async () => {
+        let usersObject = ""
+        await database()
+            .ref(`/Users/`)
+            .once('value')
+            .then(snapshot => {
+                console.log('getAllUsers Fetch Success');
+                usersObject = snapshot.val()
+            });
+        return usersObject
+    }
+
 
 
     static getUserAllChat = async (chatUid) => {
