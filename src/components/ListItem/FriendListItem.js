@@ -113,14 +113,11 @@ export default class FriendListItem extends Component {
             if(friendList != null){
                 this.setState({ friendList: friendList })
                 this.fetchImages()
-
             }
             else {
                 this.setState({ friendList: [] })
-
             }
         }
-
         if (JSON.stringify(messageList) !== JSON.stringify(this.state.fireBaseFriendLists)) {
             this.setState({ fireBaseFriendLists: messageList })
             this.fetchImages()

@@ -63,7 +63,6 @@ export default class CHeader extends Component {
         else { return null }
     }
 
-
     signOut() {
         auth()
             .signOut()
@@ -144,7 +143,6 @@ export default class CHeader extends Component {
                             <Ionicons name={'exit-outline'} size={30} color={'white'} />
                         </TouchableOpacity>
                         : null}
-
                 </View>
             </View>
         );
