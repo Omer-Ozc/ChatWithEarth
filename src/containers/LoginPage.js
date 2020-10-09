@@ -63,16 +63,6 @@ export default class LoginPage extends Component {
         console.error(error);
       });
   }
-
-  navigateToMainPage(){
-    
-    function wait(){
-     // this.props.navigation.navigate("MainPage")
-    }
-
-    setTimeout(wait, 4000);
-  }
-
   onAuthStateChanged(user) {
     this.setState({ user: user });
     if (this.state.initializing) {
@@ -89,9 +79,6 @@ export default class LoginPage extends Component {
       this.setState({ loading: false, user });
     });
   }
-
-  
-
 
   render() {
 

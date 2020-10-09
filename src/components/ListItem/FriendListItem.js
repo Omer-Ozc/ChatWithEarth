@@ -225,6 +225,7 @@ export default class FriendListItem extends Component {
                         <View style={{ backgroundColor: 'white' }}>
                             <TouchableOpacity
                                 style={{ borderBottomColor: '#432577', borderBottomWidth: 1 }}
+                                onLongPress = {() => this.props.edit(data.uid, data.name, data.lastName)}
                                 onPress={() => this.props.ChatPage(data.uid, data.name, data.lastName, this.state.images[index])}>
                                 <View style={{ top: "2%", marginStart: "1%" }}>
                                     {this.state.images[index] != null ?

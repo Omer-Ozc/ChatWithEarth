@@ -130,6 +130,7 @@ export default class MainPage extends Component {
             navigateToAddFriend={() => this.navigation()}
             navigateToMap={() => this.navigateToMap()}
             sendRandomUserToAddPage={(uid, name, lastName) => this.sendRandomUserToAddPage(uid, name, lastName)}
+            edit = {(uid,name,lastName) => this.sendRandomUserToAddPage(uid, name, lastName) }
           />
 
         </View>

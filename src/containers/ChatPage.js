@@ -63,9 +63,7 @@ export default class ChatPage extends Component {
     const array = Object.keys(this.state.chat);
     const array2 = Object.values(this.state.chat);
 
-
     do {
-
       swapped = false
       for (let k = 0; k < array.length - 1; k++) {
         let firstDate = array[k]
@@ -83,7 +81,6 @@ export default class ChatPage extends Component {
           array2[k] = array2[k + 1];
           array2[k + 1] = tmp2;
         }
-
       }
     } while (swapped);
 
@@ -170,7 +167,6 @@ export default class ChatPage extends Component {
           <TouchableOpacity style={styles.sendMessageIcon}
             onPress={() => { this.state.message != "" ? this.sendMessage() : null }}>
             <Ionicons name={'ios-send'} size={26} color={this.state.message != "" ? "green" : "gray"} />
-
           </TouchableOpacity>
 
         </View>

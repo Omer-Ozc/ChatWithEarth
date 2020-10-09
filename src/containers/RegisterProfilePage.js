@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, Button, Dimensions, Image, Touchable
 import FirebaseSimpleService from '../Firebase/FirebaseSimpleService'
 import ImagePicker from 'react-native-image-picker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import Toast from 'react-native-simple-toast';
 
 const { width: WIDTH } = Dimensions.get('window')
 
@@ -35,19 +35,13 @@ export default class RegisterProfilePage extends Component {
 
     imagePicker() {
         ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
-
             if (response.didCancel) {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             } else {
                 const source = response;
-
-                // You can also display the image using data:
                 const urli = { uri: 'data:image/jpeg;base64,' + response.data };
-                //console.log("Source", source.path)
-
                 this.setState({
                     userAvatar: urli,
                     path: source.path
@@ -58,16 +52,6 @@ export default class RegisterProfilePage extends Component {
         });
 
     }
-
-    /*shouldComponentUpdate(nextProps, nextState){
-        if(JSON.stringify(nextState.userAvatar) === JSON.stringify(this.state.userAvatar) ){
-            return false
-        }
-        return true
-    }*/
-
-
-
 
     handleName(text) {
         this.setState({ name: text })
@@ -85,9 +69,16 @@ export default class RegisterProfilePage extends Component {
     }
 
     btnPush = async () => {
+        if(this.state.name == "" || this.state.lastName == "" || this.state.age == ""){
+            Toast.show('Fill the empty blank');
+        }
+        if(this.state.userAvatar == null){
+            Toast.show('Upload your profile photo');
+        }
+        else{
         await FirebaseSimpleService.setRegisterMethod(this.state.name, this.state.lastName, this.state.age)
         await FirebaseSimpleService.setRegisterMethodForOnlineUsers(this.state.name, this.state.lastName, this.state.age)
-        this.props.navigation.navigate("MainPage")
+        this.props.navigation.navigate("MainPage")}
     }
 
     render() {

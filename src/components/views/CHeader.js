@@ -8,7 +8,7 @@ import auth from '@react-native-firebase/auth';
 import FirebaseGetService from '../../Firebase/FirebaseGetService'
 
 let image;
-let userImage = null
+
 export default class CHeader extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +24,16 @@ export default class CHeader extends Component {
         this.setState({ userID: userId })
         image = await FirebaseGetService.getUserImage(userId)
         this.setState({ images: image })
+    }
+
+    componentDidUpdate = async() => {
+        console.log("this.state.images : ",this.state.images)
+        if(this.state.images == ""){
+        console.log("componentDidUpdate")
+        const userId = auth().currentUser.uid;
+        image = await FirebaseGetService.getUserImage(userId)
+        this.setState({ images: image })
+        } 
     }
 
     setPopup() {

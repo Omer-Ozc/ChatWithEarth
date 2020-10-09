@@ -3,6 +3,7 @@ import { View, Text, TextInput, Image, StyleSheet, Dimensions, TouchableOpacity 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import logo from '../res/images/earthLogo.jpg'
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-simple-toast';
 
 
 const { width: WIDTH } = Dimensions.get('window')
@@ -31,7 +32,41 @@ export default class LoginPage extends Component {
   }
 
   btnSignUp = () => {
-    if (this.state.password === this.state.verifyPassword) {
+    if(this.state.email == ""){
+      Toast.show("Fill the email blank");
+    }
+    else if(this.state.email.indexOf("@") == -1){
+      Toast.show("You have enter a mail");
+    }
+    else if(this.state.password.length.toString() < 8 ){
+      Toast.show("Your password must be greater than 8 digits");
+    }
+    else if(this.state.password !== this.state.verifyPassword){
+      Toast.show("Your passwords is different");
+    }
+    else{ 
+        auth()
+          .createUserWithEmailAndPassword(this.state.email, this.state.password)
+          .then(() => {
+            console.log('User account created & signed in!');
+            this.props.navigation.navigate('RegisterProfilePage')
+          })
+          .catch(error => {
+            if (error.code === 'auth/email-already-in-use') {
+              console.log('That email address is already in use!');
+            }
+  
+            if (error.code === 'auth/invalid-email') {
+              console.log('That email address is invalid!');
+            }
+  
+            console.error(error);
+          });
+    }
+
+
+
+    /*if (this.state.password === this.state.verifyPassword) {
       auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
@@ -49,7 +84,7 @@ export default class LoginPage extends Component {
 
           console.error(error);
         });
-    }
+    }*/
   }
 
   render() {
