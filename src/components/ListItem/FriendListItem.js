@@ -231,7 +231,7 @@ export default class FriendListItem extends Component {
                                     {this.state.images[index] != null ?
                                         <Image
                                             source={{ uri: this.state.images[index] }}
-                                            style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 4 }} />
+                                            style={{ width: 60, height: 60, borderRadius: 50, marginBottom: 4, borderWidth:2, borderColor:'#432577' }} />
                                         :
                                         <Ionicons name={'person-circle-outline'} size={60} color={'black'} />}
                                 </View>

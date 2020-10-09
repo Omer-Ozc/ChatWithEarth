@@ -27,9 +27,7 @@ export default class CHeader extends Component {
     }
 
     componentDidUpdate = async() => {
-        console.log("this.state.images : ",this.state.images)
         if(this.state.images == ""){
-        console.log("componentDidUpdate")
         const userId = auth().currentUser.uid;
         image = await FirebaseGetService.getUserImage(userId)
         this.setState({ images: image })
@@ -140,7 +138,7 @@ export default class CHeader extends Component {
 
                     {this.props.showPlus != "off" ?
                         <TouchableOpacity
-                            style={styles.touchableStyle}
+                            style={this.props.showExit === "on" ? styles.touchableStyle : styles.touchableStyle2}
                             onPress={() => this.props.navigatons()}>
                             <AntDesign name={'plus'} size={26} color={'white'} />
                         </TouchableOpacity>
@@ -148,9 +146,9 @@ export default class CHeader extends Component {
 
                     {this.props.showExit === "on" ?
                         <TouchableOpacity
-                            style={{ left: 20 }}
+                            style={{ left: 280 }}
                             onPress={() => this.signOut()}>
-                            <Ionicons name={'exit-outline'} size={30} color={'white'} />
+                            <Ionicons name={'exit-outline'} size={35} color={'white'} />
                         </TouchableOpacity>
                         : null}
                 </View>
@@ -184,8 +182,14 @@ const styles = StyleSheet.create({
 
     touchableStyle: {
         position: 'absolute',
+        left: 315,
+    },
+
+    touchableStyle2: {
+        position: 'absolute',
         left: 380,
     },
+
 
     touchableMap: {
         position: 'absolute',

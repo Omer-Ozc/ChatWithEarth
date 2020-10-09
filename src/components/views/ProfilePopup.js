@@ -64,11 +64,6 @@ export default class ProfilePopup extends Component {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
                 const source = response;
-
-                // You can also display the image using data:
-                // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-                //console.log("Source", source.path)
-
                 this.setState({
                     avatarSource: source.data,
                     path: source.path
@@ -125,7 +120,7 @@ export default class ProfilePopup extends Component {
 
                         {this.props.showID === "on" ?
                             <TextInput
-                                style={{ top: "10%", color: "red" }}
+                                style={{ top: "10%", color: "red", backgroundColor:'lightgray', borderRadius:50 }}
                                 value={this.props.uid} />
                             : null}
 
